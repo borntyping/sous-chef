@@ -30,3 +30,20 @@ def create_app():
     app.before_request(set_request_time)
     app.register_blueprint(sous_chef.blueprints.ui)
     return app
+
+
+def create_debug_app():
+    app = create_app()
+    app.config['DEBUG'] = True
+
+    # Install the Flask debug toolbar extension, if the package is availible
+    try:
+        from flask_debugtoolbar import DebugToolbarExtension
+    except ImportError:
+        pass
+    else:
+        if app.config['SECRET_KEY'] is None:
+            app.config['SECRET_KEY'] = 'debug-secret-key'
+        DebugToolbarExtension(app)
+
+    return app

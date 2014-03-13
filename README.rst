@@ -10,21 +10,30 @@ A small webapp for viewing and searching Chef nodes.
 Usage
 -----
 
-Currently provides a command line entry point named ``sous-chef`` that runs the
-app using Flask's built in development server, and enables the [Flask Debug
-Toolbar](http://flask-debugtoolbar.readthedocs.org/). Expect this to be replaced
-with a full WSGI server in the near future.
+	gunicorn 'sous_chef:create_app()'
+
+The app can be run in debug mode by using the `create_debug_app` function:
+
+	gunicorn 'sous_chef:create_debug_app()'
+
+The ``flask-debugtoolbar`` package is availible, the DebugToolbar extension will
+be used.
 
 Installation
 ------------
 
-	pip install sous-chef
+	pip install sous-chef gunicorn
 
 Requirements
 ^^^^^^^^^^^^
 
-Requires [Flask](http://flask.pocoo.org/) and
-[PyChef](https://github.com/coderanger/pychef).
+Requires `Flask`_ and `PyChef`_. `Gunicorn`_ is the simplest method of
+deployment, but is not a requirement (allowing alternate WSGI servers to be
+used). Optionally uses `Flask Debug Toolbar`_ using the debug application.
+
+.. _Flask: http://flask.pocoo.org/
+.. _PyChef: https://github.com/coderanger/pychef
+.. _Flask Debug Toolbar: https://pypi.python.org/pypi/Flask-DebugToolbar
 
 Compatibility
 ^^^^^^^^^^^^^

@@ -2,24 +2,7 @@
 
 __version__ = '0.2.0'
 __author__ = 'Sam Clements <sam.clements@datasift.com>'
-__all__ = ['main', 'create_app']
+__all__ = ['create_app', 'create_debug_app']
 
 
-from sous_chef.app import create_app
-
-
-def main():
-    create_app().run()
-
-
-def debug():
-    from flask_debugtoolbar import DebugToolbarExtension
-
-    app = create_app()
-    app.config['DEBUG'] = True
-    app.config['SECRET_KEY'] = 'debug-secret-key'
-    DebugToolbarExtension(app)
-    app.run()
-
-if __name__ == '__main__':
-    main()
+from sous_chef.app import create_app, create_debug_app
