@@ -33,6 +33,7 @@ used). Optionally uses `Flask Debug Toolbar`_ using the debug application.
 
 .. _Flask: http://flask.pocoo.org/
 .. _PyChef: https://github.com/coderanger/pychef
+.. _Gunicorn: http://gunicorn.org/
 .. _Flask Debug Toolbar: https://pypi.python.org/pypi/Flask-DebugToolbar
 
 Compatibility
