@@ -72,5 +72,5 @@ Authors
 ``sous-chef`` was written by `Sam Clements <sam.clements@datasift.com>`_ at
 `DataSift <datasift.com>`_.
 
-.. image:: https://0.gravatar.com/avatar/8dd5661684a7385fe723b7e7588e91ee?d=https%3A%2F%2Fidenticons.github.com%2Fe83ef7586374403a328e175927b98cac.png&r=x&s=40
-.. image:: https://1.gravatar.com/avatar/a3a6d949b43b6b880ffb3e277a65f49d?d=https%3A%2F%2Fidenticons.github.com%2F065affbc170e2511eeacb3bd0e975ec1.png&r=x&s=40
+.. image:: https://gravatar.com/avatar/8dd5661684a7385fe723b7e7588e91ee?s=40
+.. image:: https://gravatar.com/avatar/a3a6d949b43b6b880ffb3e277a65f49d?s=40
