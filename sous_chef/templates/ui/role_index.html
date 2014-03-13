@@ -1,0 +1,7 @@
+<ul>
+{% for role in roles %}
+	<li>
+		<a href="{{ url_for('ui.role', name=role) }}">{{role}}</a>
+	</li>
+{% endfor %}
+</ul>

@@ -1,0 +1,12 @@
+<table>
+	<tr>
+		<th>Endpoint</th>
+		<th>Path</th>
+	</tr>
+{% for rule in rules %}
+	<tr>
+		<td>{{rule.endpoint}}</td>
+		<td><code>{{ rule | escape }}</code></td>
+	</tr>
+{% endfor %}
+</table>

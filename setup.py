@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="sous-chef",
-    version="0.1.0",
+    version="0.2.0",
     url="https://github.com/borntyping/sous-chef",
 
     author="Sam Clements",
@@ -14,7 +14,8 @@ setuptools.setup(
     packages=setuptools.find_packages(),
 
     install_requires=[
-        'flask'
+        'flask==0.10.1',
+        'pychef==0.2.3'
     ],
 
     entry_points={
