@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Nodes{% endblock %}
+{% block content %}
+<ul class="attempt-columns">
+{% for node_name in nodes %}
+  <li>
+    <a href="{{ url_for('ui.node', name=node_name) }}">
+      <code>{{ node_name }}</code>
+    </a>
+  </li>
+{% endfor %}
+</ul>
+{% endblock %}

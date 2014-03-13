@@ -8,11 +8,17 @@ __all__ = ['api']
 ui = flask.Blueprint('ui', __name__)
 
 
+class Node(chef.Node):
+    @property
+    def roles(self):
+        return sorted(r[5:-1] for r in self.run_list if r.startswith('role'))
+
+
 @ui.route('/')
 @ui.route('/roles/')
 def role_index():
-    roles = sorted(chef.Role.list())
-    return flask.render_template('role_index.html', roles=roles)
+    return flask.render_template(
+        'role_index.html', roles=sorted(chef.Role.list()))
 
 
 @ui.route('/roles/<string:name>')
@@ -23,10 +29,10 @@ def role(name):
     return flask.render_template('role.html', role=role, nodes=nodes)
 
 
-class Node(chef.Node):
-    @property
-    def roles(self):
-        return sorted(r[5:-1] for r in self.run_list if r.startswith('role'))
+@ui.route('/nodes/')
+def node_index():
+    return flask.render_template(
+        'node_index.html', nodes=sorted(chef.Node.list()))
 
 
 @ui.route('/nodes/<string:name>')

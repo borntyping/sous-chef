@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}Roles{% endblock %}
-{% block body %}
-<ul>
+{% block content %}
+<ul class="attempt-columns">
 {% for role_name in roles %}
   <li>
     <a href="{{ url_for('ui.role', name=role_name) }}">
