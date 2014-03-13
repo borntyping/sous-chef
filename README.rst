@@ -11,21 +11,25 @@ Usage
 -----
 
 Currently provides a command line entry point named ``sous-chef`` that runs the
-app using Flask's built in development server. Expect this to be replaced with a
-full wsgi server in the near future.
+app using Flask's built in development server, and enables the [Flask Debug
+Toolbar](http://flask-debugtoolbar.readthedocs.org/). Expect this to be replaced
+with a full WSGI server in the near future.
 
 Installation
 ------------
 
+	pip install sous-chef
+
 Requirements
 ^^^^^^^^^^^^
 
-Requires Flask 0.10 or above.
+Requires [Flask](http://flask.pocoo.org/) and
+[PyChef](https://github.com/coderanger/pychef).
 
 Compatibility
--------------
+^^^^^^^^^^^^^
 
-Requires Python 3 or above.
+Targets Python 3.3 and above.
 
 Licence
 -------
