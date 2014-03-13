@@ -9,7 +9,17 @@ from sous_chef.app import create_app
 
 
 def main():
-    create_app(debug=True).run()
+    create_app().run()
+
+
+def debug():
+    from flask_debugtoolbar import DebugToolbarExtension
+
+    app = create_app()
+    app.config['DEBUG'] = True
+    app.config['SECRET_KEY'] = 'debug-secret-key'
+    DebugToolbarExtension(app)
+    app.run()
 
 if __name__ == '__main__':
     main()

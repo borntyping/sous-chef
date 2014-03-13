@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="sous-chef",
-    version="0.2.0",
+    version="0.3.0",
     url="https://github.com/borntyping/sous-chef",
 
     author="Sam Clements",
@@ -18,9 +18,16 @@ setuptools.setup(
         'pychef==0.2.3'
     ],
 
+    extras_require = {
+        'debug': [
+            'flask-debugtoolbar>=0.9.0'
+        ]
+    },
+
     entry_points={
         'console_scripts': [
-            'sous-chef = sous_chef:main'
+            'sous-chef = sous_chef:main',
+            'sous-chef-debug = sous_chef:debug'
         ]
     },
 
