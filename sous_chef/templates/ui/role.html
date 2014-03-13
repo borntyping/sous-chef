@@ -1,1 +1,11 @@
-<a href="{{ url_for('role', name=role) }}">{{role}}</a>
+{% extends 'base.html' %}
+{% block title %}{{ role.name }}{% endblock %}
+{% block body %}
+<ul>
+{% for node in nodes %}
+  <li>
+    <code>{{ node.name }}</code>
+  </li>
+{% endfor %}
+</ul>
+{% endblock %}

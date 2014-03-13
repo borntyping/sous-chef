@@ -1,7 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Roles{% endblock %}
+{% block body %}
 <ul>
-{% for role in roles %}
-	<li>
-		<a href="{{ url_for('ui.role', name=role) }}">{{role}}</a>
-	</li>
+{% for role_name in roles %}
+  <li>
+    <a href="{{ url_for('ui.role', name=role_name) }}">
+      <code>{{ role_name }}</code>
+    </a>
+  </li>
 {% endfor %}
 </ul>
+{% endblock %}

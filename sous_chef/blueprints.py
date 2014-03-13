@@ -15,7 +15,7 @@ def role_index():
     return flask.render_template('role_index.html', roles=roles)
 
 
-@ui.route('/role/<string:name>')
+@ui.route('/roles/<string:name>')
 def role(name):
     role = chef.Role(name)
     nodes = chef.Search('node', 'roles:{} AND chef_environment:{}'.format(
@@ -49,7 +49,9 @@ def readme():
     return flask.render_template('readme.html')
 
 
+@about.route('/urls')
 @about.route('/rules')
 def rules():
-    return flask.render_template(
-        'rules.html', rules=sorted(flask.current_app.url_map.iter_rules()))
+    rules = flask.current_app.url_map.iter_rules()
+    rules = sorted(rules, key=lambda r: r.rule)
+    return flask.render_template('rules.html', rules=rules)
