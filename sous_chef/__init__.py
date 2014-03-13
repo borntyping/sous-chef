@@ -9,8 +9,7 @@ from sous_chef.app import create_app
 
 
 def main():
-    app = create_app()
-    app.run(debug=True)
+    create_app(debug=True).run()
 
 if __name__ == '__main__':
     main()
