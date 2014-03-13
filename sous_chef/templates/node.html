@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}{{ node.name }}{% endblock %}
+{% block body %}
+<div class="row">
+  <div class="col-md-6">
+    <h3>Run list</h3>
+    <ul>
+    {% for item in node.run_list %}
+      <li>
+        <code>{{ item }}</code>
+      </li>
+    {% endfor %}
+    </ul>
+  </div>
+
+  <div class="col-md-6">
+    <h3>Roles</h3>
+    <ul>
+    {% for role_name in node.roles %}
+      <li>
+        <a href="{{ url_for('ui.role', name=role_name) }}">
+          <code>{{ role_name }}</code>
+        </a>
+      </li>
+    {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}

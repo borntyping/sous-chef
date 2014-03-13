@@ -5,11 +5,11 @@ import chef
 
 __all__ = ['api']
 
-ui = flask.Blueprint('ui', __name__, template_folder='templates/ui')
+ui = flask.Blueprint('ui', __name__)
 
 
 @ui.route('/')
-@ui.route('/roles')
+@ui.route('/roles/')
 def role_index():
     roles = sorted(chef.Role.list())
     return flask.render_template('role_index.html', roles=roles)
@@ -21,6 +21,18 @@ def role(name):
     nodes = chef.Search('node', 'roles:{} AND chef_environment:{}'.format(
         role.name, 'production'))
     return flask.render_template('role.html', role=role, nodes=nodes)
+
+
+class Node(chef.Node):
+    @property
+    def roles(self):
+        return sorted(r[5:-1] for r in self.run_list if r.startswith('role'))
+
+
+@ui.route('/nodes/<string:name>')
+def node(name):
+    return flask.render_template('node.html', node=Node(name))
+
 
 api = flask.Blueprint('api', __name__)
 
@@ -39,19 +51,3 @@ def nodes_by_role(role):
 @api.route('/roles')
 def roles():
     return flask.jsonify(roles=sorted(chef.Role.list()))
-
-about = flask.Blueprint('about', __name__, template_folder='templates/about')
-
-
-@about.route('/')
-@about.route('/readme')
-def readme():
-    return flask.render_template('readme.html')
-
-
-@about.route('/urls')
-@about.route('/rules')
-def rules():
-    rules = flask.current_app.url_map.iter_rules()
-    rules = sorted(rules, key=lambda r: r.rule)
-    return flask.render_template('rules.html', rules=rules)

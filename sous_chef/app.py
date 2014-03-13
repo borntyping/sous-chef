@@ -14,9 +14,8 @@ def configure_chef():
 
 
 def create_app():
-    app = flask.Flask('sous-chef')
+    app = flask.Flask('sous_chef')
     app.before_first_request(configure_chef)
     app.register_blueprint(sous_chef.blueprints.ui)
     app.register_blueprint(sous_chef.blueprints.api, url_prefix='/api/v0')
-    app.register_blueprint(sous_chef.blueprints.about, url_prefix='/about')
     return app

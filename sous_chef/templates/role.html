@@ -4,7 +4,9 @@
 <ul>
 {% for node in nodes %}
   <li>
-    <code>{{ node.name }}</code>
+    <a href="{{ url_for('.node', name=node.name) }}">
+      <code>{{ node.name }}</code>
+    </a>
   </li>
 {% endfor %}
 </ul>
