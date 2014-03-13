@@ -1,5 +1,12 @@
 {% extends 'base.html' %}
-{% block title %}Nodes{% endblock %}
+
+{% block title %}Chef nodes{% endblock %}
+
+{% block breadcrumbs %}
+  {{ super() }}
+  <li class="active">{{ self.title() }}</li>
+{% endblock %}
+
 {% block content %}
 <ul class="attempt-columns">
 {% for node_name in nodes %}

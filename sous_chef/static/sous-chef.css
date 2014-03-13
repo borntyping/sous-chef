@@ -1,3 +1,9 @@
+#footer {
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+/* Color code blocks in links differently */
 a code {
 	color: #428BCA;
 	background-color: #F4F8FA;

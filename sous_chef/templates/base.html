@@ -13,8 +13,14 @@
       <div class="row">
         <div class="col-sm-12">
           <div class="page-header">
-            <h1>{{ self.title() }}</h1>
+            <h1>{% block header %}{{ self.title() }}{% endblock header %}</h1>
           </div>
+
+          <ol class="breadcrumb">
+          {% block breadcrumbs %}
+            <li><a href="{{ url_for('ui.home') }}">Home</a></li>
+          {% endblock %}
+          </ol>
         </div>
       </div>
 
@@ -26,11 +32,9 @@
       </div>
       {% endblock %}
 
-      <div class="row">
+      <div id="footer" class="row">
         <div class="col-sm-12 text-muted">
           Fetched data in approximately {{ g.request_time() }} seconds.
-
-          <a href="{{ url_for('ui.roles') }}">Return to role list</a>.
         </div>
       </div>
     </div>

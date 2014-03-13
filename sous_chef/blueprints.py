@@ -3,7 +3,7 @@
 import flask
 import chef
 
-__all__ = ['api']
+__all__ = ['ui']
 
 ui = flask.Blueprint('ui', __name__)
 
@@ -17,8 +17,7 @@ class Node(chef.Node):
 @ui.route('/', endpoint='home')
 @ui.route('/roles/')
 def roles():
-    return flask.render_template(
-        'role_index.html', roles=sorted(chef.Role.list()))
+    return flask.render_template('roles.html', roles=sorted(chef.Role.list()))
 
 
 @ui.route('/roles/<string:name>')
@@ -31,8 +30,7 @@ def role(name):
 
 @ui.route('/nodes/')
 def nodes():
-    return flask.render_template(
-        'node_index.html', nodes=sorted(chef.Node.list()))
+    return flask.render_template('nodes.html', nodes=sorted(chef.Node.list()))
 
 
 @ui.route('/nodes/<string:name>')
