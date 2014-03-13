@@ -29,5 +29,4 @@ def create_app():
     app.before_first_request(configure_chef)
     app.before_request(set_request_time)
     app.register_blueprint(sous_chef.blueprints.ui)
-    app.register_blueprint(sous_chef.blueprints.api, url_prefix='/api/v0')
     return app

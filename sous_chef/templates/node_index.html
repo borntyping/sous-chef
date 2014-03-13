@@ -4,7 +4,7 @@
 <ul class="attempt-columns">
 {% for node_name in nodes %}
   <li>
-    <a href="{{ url_for('ui.node', name=node_name) }}">
+    <a href="{{ url_for('.node', name=node_name) }}">
       <code>{{ node_name }}</code>
     </a>
   </li>

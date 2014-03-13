@@ -14,9 +14,9 @@ class Node(chef.Node):
         return sorted(r[5:-1] for r in self.run_list if r.startswith('role'))
 
 
-@ui.route('/')
+@ui.route('/', endpoint='home')
 @ui.route('/roles/')
-def role_index():
+def roles():
     return flask.render_template(
         'role_index.html', roles=sorted(chef.Role.list()))
 
@@ -30,7 +30,7 @@ def role(name):
 
 
 @ui.route('/nodes/')
-def node_index():
+def nodes():
     return flask.render_template(
         'node_index.html', nodes=sorted(chef.Node.list()))
 
@@ -38,22 +38,3 @@ def node_index():
 @ui.route('/nodes/<string:name>')
 def node(name):
     return flask.render_template('node.html', node=Node(name))
-
-
-api = flask.Blueprint('api', __name__)
-
-
-@api.route('/nodes')
-def nodes():
-    return flask.jsonify(nodes=sorted(chef.Node.list()))
-
-
-@api.route('/nodes/<string:role>')
-def nodes_by_role(role):
-    nodes = chef.Search('node', 'roles:{}'.format(role))
-    return flask.jsonify(nodes=[node.object.name for node in nodes])
-
-
-@api.route('/roles')
-def roles():
-    return flask.jsonify(roles=sorted(chef.Role.list()))

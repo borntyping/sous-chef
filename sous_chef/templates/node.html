@@ -18,7 +18,7 @@
     <ul>
     {% for role_name in node.roles %}
       <li>
-        <a href="{{ url_for('ui.role', name=role_name) }}">
+        <a href="{{ url_for('.role', name=role_name) }}">
           <code>{{ role_name }}</code>
         </a>
       </li>
