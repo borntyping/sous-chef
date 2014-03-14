@@ -18,7 +18,7 @@ def current_envionment():
 
 def search_nodes(**kwargs):
     kwargs.setdefault('chef_environment', current_envionment())
-    search = ' AND '.join('{}:{}'.format(k, v) for k, v in kwargs.items())
+    search = ' AND '.join('{0}:{1}'.format(k, v) for k, v in kwargs.items())
     return chef.Search('node', search)
 
 

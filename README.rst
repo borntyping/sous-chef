@@ -20,7 +20,8 @@ Flask configuration file (`docs`_)::
 	gunicorn --env 'SOUS_CHEF_SETTINGS=config.py' 'sous_chef:create_app()'
 
 The Flask settings ``CHEF_URL``, ``CHEF_KEY`` and ``CHEF_CLIENT`` are used to
-create a Chef API client, using PyChef's `autoconfigure`_ as a fallback.
+create a Chef API client, using PyChef's `autoconfigure`_ as a fallback. See
+``sous_chef/defaults.py`` for more information on the configuration options.
 
 The app can be run in debug mode by using the `create_debug_app` function:
 
@@ -56,7 +57,7 @@ used). Optionally uses `Flask Debug Toolbar`_ using the debug application.
 Compatibility
 ^^^^^^^^^^^^^
 
-Targets Python 2.7, 3.3 and above.
+Targets Python 2.6 and above.
 
 Licence
 -------

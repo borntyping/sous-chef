@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="sous-chef",
-    version="0.5.0",
+    version="0.6.0",
     url="https://github.com/datasift/sous-chef",
 
     author="Sam Clements",
@@ -12,6 +12,8 @@ setuptools.setup(
     long_description=open('README.rst').read(),
 
     packages=setuptools.find_packages(),
+    include_package_data=True,
+    zip_safe=False,
 
     install_requires=[
         'flask==0.10.1',

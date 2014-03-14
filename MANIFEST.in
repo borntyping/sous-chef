@@ -1,0 +1,2 @@
+recursive-include sous_chef/templates *
+recursive-include sous_chef/static *
