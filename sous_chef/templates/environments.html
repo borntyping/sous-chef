@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Chef environments{% endblock %}
+{% block content %}
+<ul class="attempt-columns">
+{% for environment_name in environments %}
+  <li>
+    <a href="{{ url_for('.environment', name=environment_name) }}">
+      <code>{{ environment_name }}</code>
+    </a>
+  </li>
+{% endfor %}
+</ul>
+{% endblock %}

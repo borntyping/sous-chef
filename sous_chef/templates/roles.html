@@ -2,11 +2,6 @@
 
 {% block title %}Chef roles{% endblock %}
 
-{% block breadcrumbs %}
-  {{ super() }}
-  <li class="active">Roles</li>
-{% endblock %}
-
 {% block content %}
 <ul class="attempt-columns">
 {% for role_name in roles %}

@@ -1,14 +1,6 @@
 {% extends 'base.html' %}
-
 {% block title %}Chef node: {{ node.name }}{% endblock %}
 {% block header %}{{ node.name }} <small>{{ node.chef_environment }}</small>{% endblock %}
-
-{% block breadcrumbs %}
-  {{ super() }}
-  <li><a href="{{ url_for('ui.nodes') }}">Chef nodes</a></li>
-  <li class="active">{{ node.name }}</li>
-{% endblock %}
-
 {% block body %}
 <div class="row">
   <div class="col-md-6">

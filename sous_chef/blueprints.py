@@ -23,7 +23,7 @@ def search_nodes(**kwargs):
 
 
 def search_node_names(**kwargs):
-    return [row['name'] for row in search_nodes(**kwargs)]
+    return sorted(row['name'] for row in search_nodes(**kwargs))
 
 
 class Node(chef.Node):
@@ -61,17 +61,21 @@ def set_environment_variables():
     flask.g.chef_environment = current_envionment()
 
 
-# @ui.route('/environments/')
-# def environments(name):
-#     pass
+@ui.route('/environments/')
+def environments():
+    return flask.render_template(
+        'environments.html', environments=sorted(chef.Environment.list()))
 
 
-# @ui.route('/environments/<string:name>')
-# def environment(name):
-#     pass
+@ui.route('/environments/<string:name>')
+def environment(name):
+    environment = chef.Environment(name)
+    nodes = search_node_names(chef_environment=environment.name)
+    return flask.render_template(
+        'environment.html', environment=environment, nodes=nodes)
 
 
-@ui.route('/environments/<string:name>/set')
+@ui.route('/environments/<string:name>/select')
 def select_environment(name):
     if name in flask.g.chef_environments:
         flask.session['chef_environment'] = name

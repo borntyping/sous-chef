@@ -2,19 +2,18 @@
 
 {% block title %}Chef nodes{% endblock %}
 
-{% block breadcrumbs %}
-  {{ super() }}
-  <li class="active">{{ self.title() }}</li>
-{% endblock %}
+{% macro list_nodes(node_names, use_columns=True) -%}
+  <ul {% if use_columns %}class="attempt-columns"{% endif %}>
+  {% for name in node_names %}
+    <li>
+      <a href="{{ url_for('.node', name=name) }}">
+        <code>{{ name }}</code>
+      </a>
+    </li>
+  {% endfor %}
+  </ul>
+{%- endmacro %}
 
 {% block content %}
-<ul class="attempt-columns">
-{% for node_name in nodes %}
-  <li>
-    <a href="{{ url_for('.node', name=node_name) }}">
-      <code>{{ node_name }}</code>
-    </a>
-  </li>
-{% endfor %}
-</ul>
+  {{ list_nodes(nodes) }}
 {% endblock %}
