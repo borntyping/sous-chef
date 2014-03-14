@@ -11,18 +11,22 @@ __all__ = ['create_app']
 def configure_chef():
     flask.current_app.chef = chef.autoconfigure()
     flask.current_app.chef.set_default()
-
-
-def get_chef_environments():
     flask.current_app.chef_environments = sorted(chef.Environment.list())
 
 
 def create_app():
     app = flask.Flask('sous_chef')
-    app.config['SECRET_KEY'] = 'default-secret-key'
+
+    # Load configuration from defaults and an optional config file
+    app.config.from_object('sous_chef.defaults')
+    app.config.from_envvar('SOUS_CHEF_SETTINGS', silent=True)
+
+    # Configure chef before the first request
     app.before_first_request(configure_chef)
-    app.before_first_request(get_chef_environments)
+
+    # Register blueprints - currently only the user interface
     app.register_blueprint(sous_chef.blueprints.ui)
+
     return app
 
 
