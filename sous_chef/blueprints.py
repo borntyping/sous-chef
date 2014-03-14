@@ -8,6 +8,24 @@ __all__ = ['ui']
 ui = flask.Blueprint('ui', __name__)
 
 
+def default_environment():
+    return flask.current_app.config.get('DEFAULT_CHEF_ENVIRONMENT', '_default')
+
+
+def current_envionment():
+    return flask.session.get('chef_environment', default_environment())
+
+
+def search_nodes(**kwargs):
+    kwargs.setdefault('chef_environment', current_envionment())
+    search = ' AND '.join('{}:{}'.format(k, v) for k, v in kwargs.items())
+    return chef.Search('node', search)
+
+
+def search_node_names(**kwargs):
+    return [row['name'] for row in search_nodes(**kwargs)]
+
+
 class Node(chef.Node):
     @property
     def roles(self):
@@ -23,16 +41,39 @@ def roles():
 @ui.route('/roles/<string:name>')
 def role(name):
     role = chef.Role(name)
-    nodes = chef.Search('node', 'roles:{} AND chef_environment:{}'.format(
-        role.name, 'production'))
+    nodes = search_node_names(role=role.name)
     return flask.render_template('role.html', role=role, nodes=nodes)
 
 
 @ui.route('/nodes/')
 def nodes():
-    return flask.render_template('nodes.html', nodes=sorted(chef.Node.list()))
+    return flask.render_template('nodes.html', nodes=search_node_names())
 
 
 @ui.route('/nodes/<string:name>')
 def node(name):
     return flask.render_template('node.html', node=Node(name))
+
+
+@ui.before_request
+def set_environment_variables():
+    flask.g.chef_environments = flask.current_app.chef_environments
+    flask.g.chef_environment = current_envionment()
+
+
+# @ui.route('/environments/')
+# def environments(name):
+#     pass
+
+
+# @ui.route('/environments/<string:name>')
+# def environment(name):
+#     pass
+
+
+@ui.route('/environments/<string:name>/set')
+def select_environment(name):
+    if name in flask.g.chef_environments:
+        flask.session['chef_environment'] = name
+        flask.session.permanent = True
+    return flask.redirect(flask.request.referrer or flask.url_for('ui.home'))

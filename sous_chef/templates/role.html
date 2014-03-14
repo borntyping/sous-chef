@@ -10,12 +10,11 @@
 {% endblock %}
 
 {% block content %}
-<h3>Nodes</h3>
 <ul class="attempt-columns">
 {% for node in nodes %}
   <li>
-    <a href="{{ url_for('.node', name=node.name) }}">
-      <code>{{ node.name }}</code>
+    <a href="{{ url_for('.node', name=node) }}">
+      <code>{{ node }}</code>
     </a>
   </li>
 {% endfor %}

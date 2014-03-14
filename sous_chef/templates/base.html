@@ -6,21 +6,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Base template{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-3.1.1.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-theme-3.1.1.min.css')}}">
     <link rel="stylesheet" href="{{ url_for('static', filename='sous-chef.css')}}">
+    <script src="{{ url_for('static', filename='jquery-1.11.0.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='bootstrap-3.1.1.min.js')}}"></script>
   </head>
   <body>
+      <nav class="navbar navbar-default navbar-static-top" role="navigation">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{{ url_for('.home') }}">Sous-chef</a>
+          </div>
+
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="navbar">
+            <ul class="nav navbar-nav navbar-right">
+              <li><a href="{{ url_for('.roles') }}">Roles</a></li>
+              <li><a href="{{ url_for('.nodes') }}">Nodes</a></li>
+              <li class="dropdown">
+                <a href="#null" class="dropdown-toggle" data-toggle="dropdown">
+                  Environment: {{ g.chef_environment }} <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                {% for environment in g.chef_environments -%}
+                  <li>
+                    <a href="{{ url_for('.select_environment', name=environment) }}">
+                      {{ environment }}
+                    </a>
+                  </li>
+                {% endfor %}
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
     <div class="container">
-      <div class="row">
+      <div id="header" class="row">
         <div class="col-sm-12">
           <div class="page-header">
             <h1>{% block header %}{{ self.title() }}{% endblock header %}</h1>
           </div>
 
-          <ol class="breadcrumb">
+          <!-- <ol class="breadcrumb">
           {% block breadcrumbs %}
             <li><a href="{{ url_for('ui.home') }}">Home</a></li>
           {% endblock %}
-          </ol>
+          </ol> -->
         </div>
       </div>
 
@@ -31,12 +69,6 @@
         </div>
       </div>
       {% endblock %}
-
-      <div id="footer" class="row">
-        <div class="col-sm-12 text-muted">
-          Fetched data in approximately {{ g.request_time() }} seconds.
-        </div>
-      </div>
     </div>
   </body>
 </html>
