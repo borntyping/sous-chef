@@ -10,12 +10,16 @@ A small webapp for viewing and searching Chef nodes.
 Usage
 -----
 
+::
+
 	gunicorn 'sous_chef:create_app()'
 
 The optional environment variable ``SOUS_CHEF_SETTINGS`` can be pointed at a
 Flask configuration file (`docs`_).
 
 The app can be run in debug mode by using the `create_debug_app` function:
+
+::
 
 	gunicorn 'sous_chef:create_debug_app()'
 
@@ -26,6 +30,8 @@ be used.
 
 Installation
 ------------
+
+::
 
 	pip install sous-chef gunicorn
 
@@ -44,7 +50,7 @@ used). Optionally uses `Flask Debug Toolbar`_ using the debug application.
 Compatibility
 ^^^^^^^^^^^^^
 
-Targets Python 3.3 and above.
+Targets Python 2.7, 3.3 and above.
 
 Licence
 -------
@@ -75,7 +81,7 @@ Authors
 -------
 
 ``sous-chef`` was written by `Sam Clements <sam.clements@datasift.com>`_ at
-`DataSift <datasift.com>`_.
+`DataSift <https://datasift.com>`_.
 
 .. image:: https://gravatar.com/avatar/8dd5661684a7385fe723b7e7588e91ee?s=40
 .. image:: https://gravatar.com/avatar/a3a6d949b43b6b880ffb3e277a65f49d?s=40

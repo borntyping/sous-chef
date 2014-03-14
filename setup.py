@@ -2,8 +2,8 @@ import setuptools
 
 setuptools.setup(
     name="sous-chef",
-    version="0.3.0",
-    url="https://github.com/borntyping/sous-chef",
+    version="0.4.0",
+    url="https://github.com/datasift/sous-chef",
 
     author="Sam Clements",
     author_email="sam.clements@datasift.com",
@@ -18,9 +18,12 @@ setuptools.setup(
         'pychef==0.2.3'
     ],
 
-    extras_require = {
+    extras_require={
         'debug': [
             'flask-debugtoolbar>=0.9.0'
+        ],
+        'deploy': [
+            'gunicorn>=18.0'
         ]
     },
 
@@ -34,6 +37,8 @@ setuptools.setup(
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Programming Language :: Python',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.3',
     ],
