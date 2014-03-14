@@ -15,7 +15,12 @@ Usage
 	gunicorn 'sous_chef:create_app()'
 
 The optional environment variable ``SOUS_CHEF_SETTINGS`` can be pointed at a
-Flask configuration file (`docs`_).
+Flask configuration file (`docs`_)::
+
+	gunicorn --env 'SOUS_CHEF_SETTINGS=config.py' 'sous_chef:create_app()'
+
+The Flask settings ``CHEF_URL``, ``CHEF_KEY`` and ``CHEF_CLIENT`` are used to
+create a Chef API client, using PyChef's `autoconfigure`_ as a fallback.
 
 The app can be run in debug mode by using the `create_debug_app` function:
 
@@ -26,6 +31,7 @@ The app can be run in debug mode by using the `create_debug_app` function:
 The ``flask-debugtoolbar`` package is availible, the DebugToolbar extension will
 be used.
 
+.. _autoconfigure: pychef.readthedocs.org/en/latest/api.html#chef.autoconfigure
 .. _docs: http://flask.pocoo.org/docs/config/#configuring-from-files
 
 Installation

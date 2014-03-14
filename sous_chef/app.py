@@ -9,7 +9,16 @@ __all__ = ['create_app']
 
 
 def configure_chef():
-    flask.current_app.chef = chef.autoconfigure()
+    chef_api_config = (
+        flask.current_app.config['CHEF_URL'],
+        flask.current_app.config['CHEF_KEY'],
+        flask.current_app.config['CHEF_CLIENT'])
+
+    if all(chef_api_config):
+        flask.current_app.chef = chef.ChefAPI(*chef_api_config)
+    else:
+        flask.current_app.chef = chef.autoconfigure()
+
     flask.current_app.chef.set_default()
     flask.current_app.chef_environments = sorted(chef.Environment.list())
 
