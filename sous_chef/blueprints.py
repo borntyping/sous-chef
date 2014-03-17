@@ -1,19 +1,22 @@
 """Flask blueprints for sous-chef"""
 
+from __future__ import absolute_import
+
 import flask
 import chef
+
+import sous_chef.chef
 
 __all__ = ['ui']
 
 ui = flask.Blueprint('ui', __name__)
 
 
-def default_environment():
-    return flask.current_app.config.get('DEFAULT_CHEF_ENVIRONMENT', '_default')
-
-
 def current_envionment():
-    return flask.session.get('chef_environment', default_environment())
+    if not 'chef_environment' in flask.session:
+        flask.session['chef_environment'] = flask.current_app.config.get(
+            'DEFAULT_CHEF_ENVIRONMENT', '_default')
+    return flask.session['chef_environment']
 
 
 def search_nodes(**kwargs):
@@ -26,10 +29,17 @@ def search_node_names(**kwargs):
     return sorted(row['name'] for row in search_nodes(**kwargs))
 
 
-class Node(chef.Node):
-    @property
-    def roles(self):
-        return sorted(r[5:-1] for r in self.run_list if r.startswith('role'))
+@ui.before_request
+def set_chef_api_client():
+    """Set the global ChefAPI object as the default for this thread"""
+    flask.current_app.chef.set_default()
+
+
+@ui.before_request
+def set_environment_variables():
+    """Ensure a list of environments is availible"""
+    flask.g.chef_environments = sorted(chef.Environment.list())
+    flask.g.chef_environment = current_envionment()
 
 
 @ui.route('/', endpoint='home')
@@ -52,19 +62,13 @@ def nodes():
 
 @ui.route('/nodes/<string:name>')
 def node(name):
-    return flask.render_template('node.html', node=Node(name))
-
-
-@ui.before_request
-def set_environment_variables():
-    flask.g.chef_environments = flask.current_app.chef_environments
-    flask.g.chef_environment = current_envionment()
+    return flask.render_template('node.html', node=sous_chef.chef.Node(name))
 
 
 @ui.route('/environments/')
 def environments():
     return flask.render_template(
-        'environments.html', environments=sorted(chef.Environment.list()))
+        'environments.html', environments=flask.g.chef_environments)
 
 
 @ui.route('/environments/<string:name>')

@@ -1,37 +1,24 @@
 """The create_app() function"""
 
-import chef
+from __future__ import absolute_import
+
 import flask
 
 import sous_chef.blueprints
+import sous_chef.chef
 
 __all__ = ['create_app']
 
 
-def configure_chef():
-    chef_api_config = (
-        flask.current_app.config['CHEF_URL'],
-        flask.current_app.config['CHEF_KEY'],
-        flask.current_app.config['CHEF_CLIENT'])
-
-    if all(chef_api_config):
-        flask.current_app.chef = chef.ChefAPI(*chef_api_config)
-    else:
-        flask.current_app.chef = chef.autoconfigure()
-
-    flask.current_app.chef.set_default()
-    flask.current_app.chef_environments = sorted(chef.Environment.list())
-
-
 def create_app():
-    app = flask.Flask('sous_chef')
+    app = flask.Flask('sous_chef', instance_relative_config=True)
 
-    # Load configuration from defaults and an optional config file
+    # Load configuration from defaults and an optional instance config file
     app.config.from_object('sous_chef.defaults')
-    app.config.from_envvar('SOUS_CHEF_SETTINGS', silent=True)
+    app.config.from_pyfile('config.py')
 
     # Configure chef before the first request
-    app.before_first_request(configure_chef)
+    app.chef = sous_chef.chef.FlaskChefAPI.configure(app)
 
     # Register blueprints - currently only the user interface
     app.register_blueprint(sous_chef.blueprints.ui)

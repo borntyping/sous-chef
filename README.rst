@@ -57,7 +57,10 @@ used). Optionally uses `Flask Debug Toolbar`_ using the debug application.
 Compatibility
 ^^^^^^^^^^^^^
 
-Targets Python 2.6 and above.
+Targets Python 2.6 and 2.7.
+
+PyChef is currently Python 2 only, but if or when it is availible for Python 3
+Sous-chef should have no problems.
 
 Licence
 -------

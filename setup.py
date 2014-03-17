@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="sous-chef",
-    version="0.7.0",
+    version="0.8.3",
     url="https://github.com/datasift/sous-chef",
 
     author="Sam Clements",
@@ -40,8 +40,7 @@ setuptools.setup(
         'Development Status :: 2 - Pre-Alpha',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 2.6',
+        'Programming Language :: Python :: 2.7'
     ],
 )
