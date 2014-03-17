@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="sous-chef",
-    version="0.8.3",
+    version="0.8.4",
     url="https://github.com/datasift/sous-chef",
 
     author="Sam Clements",
