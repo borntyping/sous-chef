@@ -14,26 +14,25 @@ Usage
 
 	gunicorn 'sous_chef:create_app()'
 
-The optional environment variable ``SOUS_CHEF_SETTINGS`` can be pointed at a
-Flask configuration file (`docs`_)::
-
-	gunicorn --env 'SOUS_CHEF_SETTINGS=config.py' 'sous_chef:create_app()'
+Sous-chef will read it's configuration from a ``config.py`` file in a `Flask
+instance folder`_ - for a global install this is
+``/usr/var/sous_chef-instance``, and for a virtualenv install this is
+``/``$VIRTUALENV/var/sous_chef-instance``.
 
 The Flask settings ``CHEF_URL``, ``CHEF_KEY`` and ``CHEF_CLIENT`` are used to
-create a Chef API client, using PyChef's `autoconfigure`_ as a fallback. See
-``sous_chef/defaults.py`` for more information on the configuration options.
+create a Chef API client, using PyChef's ``autoconfigure`` as a fallback.
+``DEFAULT_CHEF_ENVIRONMENT`` sets the Chef environment to show nodes from by
+default. See ``sous_chef/defaults.py`` for more information on the configuration
+options.
 
-The app can be run in debug mode by using the `create_debug_app` function:
-
-::
+The app can be run in debug mode by using the ``create_debug_app`` function::
 
 	gunicorn 'sous_chef:create_debug_app()'
 
 The ``flask-debugtoolbar`` package is availible, the DebugToolbar extension will
 be used.
 
-.. _autoconfigure: pychef.readthedocs.org/en/latest/api.html#chef.autoconfigure
-.. _docs: http://flask.pocoo.org/docs/config/#configuring-from-files
+.. _Flask instance folder: http://flask.pocoo.org/docs/config/#instance-folders
 
 Installation
 ------------
