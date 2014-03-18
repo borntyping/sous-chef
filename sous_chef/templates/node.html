@@ -40,10 +40,10 @@
         </tr>
       </thead>
       <tbody>
-      {% for package in node['rpm_packages'] %}
+      {% for package, version in node['rpm_packages'] | dictsort %}
         <tr>
           <td><code>{{ package }}</code></td>
-          <td><code>{{ node['rpm_packages'][package] }}</code></td>
+          <td><code>{{ version }}</code></td>
         </tr>
       {% endfor %}
       </tbody>
