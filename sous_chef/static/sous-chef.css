@@ -13,6 +13,15 @@ a:hover code {
 	color: #2A6496;
 }
 
+/* Use muted colors for the footer */
+footer a {
+	color: #666;
+}
+
+footer a:hover {
+	color: #333;
+}
+
 /* Small devices (tablets, 768px and up) */
 @media (min-width: 768px) {
 
