@@ -27,4 +27,28 @@
     </ul>
   </div>
 </div>
+
+{% if node['rpm_packages'] %}
+<div class="row">
+  <div class="col-md-12">
+    <h3>RPM Packages</h3>
+    <table class="table table-condensed table-hover">
+      <thead>
+        <tr>
+          <th>Package</th>
+          <th>Version</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for package in node['rpm_packages'] %}
+        <tr>
+          <td><code>{{ package }}</code></td>
+          <td><code>{{ node['rpm_packages'][package] }}</code></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
 {% endblock %}
