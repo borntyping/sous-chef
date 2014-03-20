@@ -1,26 +1,20 @@
-#footer {
-	margin-top: 1em;
-	margin-bottom: 1em;
-}
+/* Mute environment links in headers */
+header a.environment { color: #999; }
+header a.environment:hover { color: #666; }
 
 /* Color code blocks in links differently */
-a code {
-	color: #428BCA;
-	background-color: #F4F8FA;
-}
+a code { color: #428BCA; background-color: #F4F8FA; }
+a:hover code { color: #2A6496; }
 
-a:hover code {
-	color: #2A6496;
+/* Add margins around the footer so it's not close to the text */
+footer {
+	padding-top: 1em;
+	text-align: center;
 }
 
 /* Use muted colors for the footer */
-footer a {
-	color: #666;
-}
-
-footer a:hover {
-	color: #333;
-}
+footer a { color: #666; }
+footer a:hover { color: #333; }
 
 /* Small devices (tablets, 768px and up) */
 @media (min-width: 768px) {
@@ -29,11 +23,7 @@ footer a:hover {
 
 /* Medium devices (desktops, 992px and up) */
 @media (min-width: 992px) {
-	.attempt-columns {
-		-webkit-column-count: 2;
-		-moz-column-count: 2;
-		column-count: 2;
-	}
+
 }
 
 /* Large devices (large desktops, 1200px and up) */

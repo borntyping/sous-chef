@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Base template{% endblock %} - Sous-chef</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-3.1.1.min.css')}}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-theme-3.1.1.min.css')}}">
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-theme-3.1.1.min.css')}}"> -->
     <link rel="stylesheet" href="{{ url_for('static', filename='sous-chef.css')}}">
     <script src="{{ url_for('static', filename='jquery-1.11.0.min.js')}}"></script>
     <script src="{{ url_for('static', filename='bootstrap-3.1.1.min.js')}}"></script>
@@ -27,11 +27,11 @@
           <!-- Collect the nav links, forms, and other content for toggling -->
           <div class="collapse navbar-collapse" id="navbar">
             <ul class="nav navbar-nav navbar-left">
-              <li><a href="{{ url_for('.environments') }}">Environments</a></li>
-              <li><a href="{{ url_for('.roles') }}">Roles</a></li>
-              <li><a href="{{ url_for('.nodes') }}">Nodes</a></li>
+              <li><a href="{{ url_for('.environment_index') }}">Environments</a></li>
+              <li><a href="{{ url_for('.role_index') }}">Roles</a></li>
+              <li><a href="{{ url_for('.node_index') }}">Nodes</a></li>
             </ul>
-            <ul class="nav navbar-nav navbar-right">
+            <!-- <ul class="nav navbar-nav navbar-right">
               <li class="dropdown">
                 <a href="#null" class="dropdown-toggle" data-toggle="dropdown">
                   Environment: {{ g.chef_environment }} <b class="caret"></b></a>
@@ -45,13 +45,13 @@
                 {% endfor %}
                 </ul>
               </li>
-            </ul>
+            </ul> -->
           </div>
         </div>
       </nav>
 
     <div class="container">
-      <header id="header" class="row">
+      <header class="row">
         <div class="col-sm-12">
           <div class="page-header">
             <h1>{% block header %}{{ self.title() }}{% endblock header %}</h1>
@@ -73,7 +73,7 @@
       </div>
       {% endblock %}
 
-      <footer id="footer" class="row">
+      <footer class="row">
         <div class="col-sm-12">
           <p class="text-muted"><a href="https://github.com/datasift/sous-chef">Sous-chef</a> by <a href="https://github.com/borntyping">Sam Clements</a> and <a href="https://github.com/datasift">DataSift</a>. Built with <a href="http://flask.pocoo.org/">Flask</a> and <a href="https://github.com/coderanger/pychef">PyChef</a>. Source distributed under the MIT licence.</p>
         </div>

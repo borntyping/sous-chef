@@ -1,18 +1,12 @@
 {% extends 'base.html' %}
-{% from 'nodes.html' import list_nodes %}
+{% from 'node_index.html' import list_nodes, list_nodes_by_environment %}
 {% block title %}Chef role: {{ role.name }}{% endblock %}
 {% block header %}{{ role.name }} <small>{{ role.description }}</small>{% endblock %}
-{% block breadcrumbs %}
-  {{ super() }}
-  <li><a href="{{ url_for('ui.roles') }}">Chef roles</a></li>
-  <li class="active">{{ role.name }}</li>
-{% endblock %}
-
 {% block body %}
 <div class="row">
   <div class="col-md-6">
     <h3>Nodes <small>{{ g.chef_environment }}</small></h3>
-    {{ list_nodes(nodes, False) }}
+    {{ list_nodes_by_environment(nodes) }}
   </div>
 
   <div class="col-md-6">

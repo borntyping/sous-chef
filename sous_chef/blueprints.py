@@ -12,76 +12,82 @@ __all__ = ['ui']
 ui = flask.Blueprint('ui', __name__)
 
 
-def current_envionment():
-    if not 'chef_environment' in flask.session:
-        flask.session['chef_environment'] = flask.current_app.config.get(
-            'DEFAULT_CHEF_ENVIRONMENT', '_default')
-    return flask.session['chef_environment']
-
-
-def search_nodes(**kwargs):
-    kwargs.setdefault('chef_environment', current_envionment())
-    search = ' AND '.join('{0}:{1}'.format(k, v) for k, v in kwargs.items())
-    return chef.Search('node', search)
-
-
-def search_node_names(**kwargs):
-    return sorted(row['name'] for row in search_nodes(**kwargs))
-
-
 @ui.before_request
 def set_chef_api_client():
     """Set the global ChefAPI object as the default for this thread"""
     flask.current_app.chef.set_default()
 
 
-@ui.before_request
-def set_environment_variables():
-    """Ensure a list of environments is availible"""
-    flask.g.chef_environments = sorted(chef.Environment.list())
-    flask.g.chef_environment = current_envionment()
-
+# Nodes
 
 @ui.route('/', endpoint='home')
-@ui.route('/roles/')
-def roles():
-    return flask.render_template('roles.html', roles=sorted(chef.Role.list()))
-
-
-@ui.route('/roles/<string:name>')
-def role(name):
-    role = chef.Role(name)
-    nodes = search_node_names(role=role.name)
-    return flask.render_template('role.html', role=role, nodes=nodes)
-
-
 @ui.route('/nodes/')
-def nodes():
-    return flask.render_template('nodes.html', nodes=search_node_names())
+def node_index():
+    return flask.render_template(
+        'node_index.html', nodes=chef.Search('node'))
 
 
 @ui.route('/nodes/<string:name>')
 def node(name):
-    return flask.render_template('node.html', node=sous_chef.chef.Node(name))
+    return flask.render_template(
+        'node.html', node=sous_chef.chef.Node(name))
 
+
+# Roles
+
+@ui.route('/roles/')
+def role_index():
+    return flask.render_template(
+        'role_index.html', roles=sorted(chef.Role.list()))
+
+
+@ui.route('/roles/<string:name>')
+def role(name):
+    return flask.render_template(
+        'role.html',
+        role=chef.Role(name),
+        nodes=chef.Search('node', 'role:{0}'.format(name)))
+
+
+@ui.route('/roles/<string:name>/<string:environment>')
+def role_in_environment(name, environment):
+    role = chef.Role(name)
+    nodes = chef.Search('node', 'role:{0} AND chef_environment:{}'.format(
+        name, environment))
+    return flask.render_template('role.html', role=name, nodes=nodes)
+
+
+# Environments
 
 @ui.route('/environments/')
-def environments():
+def environment_index():
     return flask.render_template(
-        'environments.html', environments=flask.g.chef_environments)
+        'environment_index.html', environments=sorted(chef.Environment.list()))
 
 
 @ui.route('/environments/<string:name>')
 def environment(name):
-    environment = chef.Environment(name)
-    nodes = search_node_names(chef_environment=environment.name)
     return flask.render_template(
-        'environment.html', environment=environment, nodes=nodes)
+        'environment.html',
+        environment=chef.Environment(name),
+        nodes=chef.Search('node', 'chef_environment:{0}'.format(name)))
 
 
-@ui.route('/environments/<string:name>/select')
-def select_environment(name):
-    if name in flask.g.chef_environments:
-        flask.session['chef_environment'] = name
-        flask.session.permanent = True
-    return flask.redirect(flask.request.referrer or flask.url_for('ui.home'))
+# def current_envionment():
+#     if not 'chef_environment' in flask.session:
+#         flask.session['chef_environment'] = flask.current_app.config.get(
+#             'DEFAULT_CHEF_ENVIRONMENT', '_default')
+#     return flask.session['chef_environment']
+
+# @ui.before_request
+# def set_environment_variables():
+#     """Ensure a list of environments is availible"""
+#     flask.g.chef_environments = sorted(chef.Environment.list())
+#     flask.g.chef_environment = current_envionment()
+
+# @ui.route('/environments/<string:name>/select')
+# def select_environment(name):
+#     if name in flask.g.chef_environments:
+#         flask.session['chef_environment'] = name
+#         flask.session.permanent = True
+#     return flask.redirect(flask.request.referrer or flask.url_for('ui.home'))

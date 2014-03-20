@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Chef nodes{% endblock %}
+
+{% macro list_nodes(nodes) -%}
+  <ul>
+  {% for node in nodes | sort %}
+    <li>
+      <a href="{{ url_for('.node', name=node['name']) }}">
+        <code>{{ node['name'] }}</code>
+      </a>
+    </li>
+  {% endfor %}
+  </ul>
+{%- endmacro %}
+
+{% macro list_nodes_by_environment(nodes) -%}
+  <div class="nodes">
+    {% for group in nodes | groupby('chef_environment') %}
+      <h4>{{ group.grouper }}</h3>
+      {{ list_nodes(group.list) }}
+    {% endfor %}
+  </div>
+{%- endmacro %}
+
+{% block content %}
+  {{ list_nodes_by_environment(nodes) }}
+{% endblock %}

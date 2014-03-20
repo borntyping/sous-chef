@@ -1,16 +1,17 @@
 {% extends 'base.html' %}
-{% from 'nodes.html' import list_nodes %}
+{% from 'node_index.html' import list_nodes %}
 {% block title %}Chef environment: {{ environment.name }}{% endblock %}
 {% block header %}{{ environment.name }} <small>{{ environment.description }}</small>{% endblock %}
 {% block body %}
 <div class="row">
   <div class="col-md-6">
     <h3>Nodes</h3>
-    {{ list_nodes(nodes, False) }}
+    {{ list_nodes(nodes) }}
   </div>
 
   <div class="col-md-6">
     <h3>Cookbook versions</h3>
+  {% if environment.cookbook_versions %}
     <ul>
     {% for cookbook, version in environment.cookbook_versions.items() %}
       <li>
@@ -18,6 +19,9 @@
       </li>
     {% endfor %}
     </ul>
+  {% else %}
+    <p class="text-info">No cookbook versions are set for this environment.</p>
+  {% endif %}
   </div>
 </div>
 {% endblock %}
