@@ -74,7 +74,7 @@ def environment(name):
 
 @ui.route('/packages/<string:type>/<string:name>')
 def package(type, name):
-    nodes = PartialSearch('node', 'packages_{}:{}'.format(type, name), keys={
+    nodes = PartialSearch('node', 'packages_{0}:{1}'.format(type, name), keys={
         'package_version': ['packages', type, name]
     })
     return flask.render_template(

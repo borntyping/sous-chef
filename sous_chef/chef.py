@@ -39,7 +39,7 @@ class PartialSearch(collections.Iterable):
         # Coerce lists of dotted attibutes to a dict
         if isinstance(keys, list):
             keys = [key.split('.') for key in keys]
-            keys = {key[0]: key for key in keys}
+            keys = dict((key[0], key) for key in keys)
 
         # Always return the name and chef environment
         keys.setdefault('name', ['name'])
