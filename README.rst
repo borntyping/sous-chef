@@ -37,9 +37,9 @@ be used.
 Installation
 ------------
 
-::
+Install Sous-chef and Gunicorn with::
 
-	pip install sous-chef gunicorn
+	pip install 'sous-chef[deploy]'
 
 Requirements
 ^^^^^^^^^^^^
