@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% from 'node_index.html' import list_nodes, list_nodes_by_environment %}
+{% block title %}{{ package_name }} - {{ package_type }} package{% endblock %}
+{% block header %}{{ package_name }} <small>{{ package_type }} package</small>{% endblock %}
+{% set nodes_by_version = nodes | groupby('package_version') %}
+{% block body %}
+<div class="row">
+  <div class="col-md-12">
+    <h3>Package versions</h3>
+    <ul>
+    {% for group in nodes_by_version %}
+      <li><a href="#{{ group.grouper }}">{{ group.grouper }}</a></li>
+    {% endfor %}
+    </ul>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <h3>Nodes by package version</h3>
+  {% if nodes_by_version | count > 1 %}
+    <div class="alert alert-warning">
+      {{ nodes_by_version | count }} versions of {{ package_name }} are installed across {{ nodes | count }} nodes.
+    </div>
+  {% endif %}
+
+  {% for group in nodes_by_version %}
+    <h4 id="{{ group.grouper }}">{{ group.grouper }}</h4>
+    {{ list_nodes(group.list) }}
+  {% endfor %}
+  </div>
+</div>
+{% endblock %}

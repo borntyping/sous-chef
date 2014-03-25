@@ -35,7 +35,7 @@ def node(name):
         'chef_environment',
         'roles',
         'run_list',
-        'rpm_packages'
+        'packages'
     ]))
 
 
@@ -68,6 +68,17 @@ def environment(name):
         'environment.html',
         environment=chef.Environment(name),
         nodes=PartialSearch('node', 'chef_environment:' + name))
+
+
+# Packages
+
+@ui.route('/packages/<string:type>/<string:name>')
+def package(type, name):
+    nodes = PartialSearch('node', 'packages_{}:{}'.format(type, name), keys={
+        'package_version': ['packages', type, name]
+    })
+    return flask.render_template(
+        'package.html', package_type=type, package_name=name, nodes=nodes)
 
 
 # def current_envionment():

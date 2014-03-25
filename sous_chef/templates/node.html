@@ -35,10 +35,11 @@
   </div>
 </div>
 
-{% if node['rpm_packages'] %}
+{% if node['packages'] %}
 <div class="row">
   <div class="col-md-12">
-    <h3>RPM Packages</h3>
+  {% for package_type, packages in node['packages'] | dictsort %}
+    <h3>Packages (<code>{{ package_type }}</code>)</h3>
     <table class="table table-condensed table-hover">
       <thead>
         <tr>
@@ -47,14 +48,23 @@
         </tr>
       </thead>
       <tbody>
-      {% for package, version in node['rpm_packages'] | dictsort %}
+      {% for package, version in packages | dictsort %}
         <tr>
-          <td><code>{{ package }}</code></td>
-          <td><code>{{ version }}</code></td>
+          <td>
+            <a href="{{ url_for('.package', type=package_type, name=package) }}">
+              <code>{{ package }}</code>
+            </a>
+          </td>
+          <td>
+            <a href="{{ url_for('.package', type=package_type, name=package, _anchor=version) }}">
+              <code>{{ version }}</code>
+            </a>
+          </td>
         </tr>
       {% endfor %}
       </tbody>
     </table>
+  {% endfor %}
   </div>
 </div>
 {% endif %}
