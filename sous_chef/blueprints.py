@@ -4,10 +4,12 @@ from __future__ import absolute_import
 
 import flask
 import chef
+import chef.exceptions
 
-import sous_chef.chef
+from sous_chef.chef import PartialSearch, get_node
 
 __all__ = ['ui']
+
 
 ui = flask.Blueprint('ui', __name__)
 
@@ -23,22 +25,25 @@ def set_chef_api_client():
 @ui.route('/', endpoint='home')
 @ui.route('/nodes/')
 def node_index():
-    return flask.render_template(
-        'node_index.html', nodes=chef.Search('node'))
+    nodes = PartialSearch('node', keys=['name', 'chef_environment'])
+    return flask.render_template('node_index.html', nodes=nodes)
 
 
 @ui.route('/nodes/<string:name>')
 def node(name):
-    return flask.render_template(
-        'node.html', node=sous_chef.chef.Node(name))
+    return flask.render_template('node.html', node=get_node(name, [
+        'chef_environment',
+        'roles',
+        'run_list',
+        'rpm_packages'
+    ]))
 
 
 # Roles
 
 @ui.route('/roles/')
 def role_index():
-    return flask.render_template(
-        'role_index.html', roles=sorted(chef.Role.list()))
+    return flask.render_template('role_index.html', roles=chef.Role.list())
 
 
 @ui.route('/roles/<string:name>')
@@ -46,15 +51,7 @@ def role(name):
     return flask.render_template(
         'role.html',
         role=chef.Role(name),
-        nodes=chef.Search('node', 'role:{0}'.format(name)))
-
-
-@ui.route('/roles/<string:name>/<string:environment>')
-def role_in_environment(name, environment):
-    role = chef.Role(name)
-    nodes = chef.Search('node', 'role:{0} AND chef_environment:{}'.format(
-        name, environment))
-    return flask.render_template('role.html', role=name, nodes=nodes)
+        nodes=PartialSearch('node', 'roles:' + name))
 
 
 # Environments
@@ -62,7 +59,7 @@ def role_in_environment(name, environment):
 @ui.route('/environments/')
 def environment_index():
     return flask.render_template(
-        'environment_index.html', environments=sorted(chef.Environment.list()))
+        'environment_index.html', environments=chef.Environment.list())
 
 
 @ui.route('/environments/<string:name>')
@@ -70,7 +67,7 @@ def environment(name):
     return flask.render_template(
         'environment.html',
         environment=chef.Environment(name),
-        nodes=chef.Search('node', 'chef_environment:{0}'.format(name)))
+        nodes=PartialSearch('node', 'chef_environment:' + name))
 
 
 # def current_envionment():

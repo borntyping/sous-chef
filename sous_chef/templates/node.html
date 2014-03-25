@@ -3,8 +3,8 @@
 {% block header %}
   {{ node.name }}
   <small>
-    <a class="environment" href="{{ url_for('.environment', name=node.chef_environment) }}">
-      {{ node.chef_environment }}
+    <a class="environment" href="{{ url_for('.environment', name=node['chef_environment']) }}">
+      {{ node['chef_environment'] }}
     </a>
   </small>
 {% endblock %}
@@ -13,7 +13,7 @@
   <div class="col-md-6">
     <h3>Run list</h3>
     <ul>
-    {% for item in node.run_list %}
+    {% for item in node['run_list'] %}
       <li>
         <code>{{ item }}</code>
       </li>
@@ -24,10 +24,10 @@
   <div class="col-md-6">
     <h3>Roles</h3>
     <ul>
-    {% for role_name in node.roles %}
+    {% for role in node['roles'] | sort %}
       <li>
-        <a href="{{ url_for('.role', name=role_name) }}">
-          <code>{{ role_name }}</code>
+        <a href="{{ url_for('.role', name=role) }}">
+          <code>{{ role }}</code>
         </a>
       </li>
     {% endfor %}

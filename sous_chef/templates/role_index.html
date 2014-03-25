@@ -4,10 +4,10 @@
 
 {% block content %}
 <ul class="attempt-columns">
-{% for role_name in roles %}
+{% for role in roles | sort %}
   <li>
-    <a href="{{ url_for('.role', name=role_name) }}">
-      <code>{{ role_name }}</code>
+    <a href="{{ url_for('.role', name=role) }}">
+      <code>{{ role }}</code>
     </a>
   </li>
 {% endfor %}
