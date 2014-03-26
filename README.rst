@@ -5,9 +5,37 @@ Sous-chef
     :target: https://pypi.python.org/pypi/sous-chef
     :alt: Latest PyPI version
 
-A small webapp for viewing Chef nodes and other metadata. Currently supports
-nodes, roles, and environments, as well as package version information (see
-below).
+A web frontend for the Chef server index, displaying nodes, roles and
+environments, as well as data collected by Ohai plugins (in particular,
+installed package versions).
+
+
+
+Installation
+------------
+
+Install Sous-chef and Gunicorn with::
+
+	pip install 'sous-chef[deploy]'
+
+Requirements
+^^^^^^^^^^^^
+
+Requires `Flask`_ and `PyChef`_. `Gunicorn`_ is the simplest method of
+deployment, but is not a requirement (allowing alternate WSGI servers to be
+used). Optionally uses `Flask Debug Toolbar`_ using the debug application.
+
+.. _Flask: http://flask.pocoo.org/
+.. _PyChef: https://github.com/coderanger/pychef
+.. _Gunicorn: http://gunicorn.org/
+.. _Flask Debug Toolbar: https://pypi.python.org/pypi/Flask-DebugToolbar
+
+Compatibility
+^^^^^^^^^^^^^
+
+Targets Python 2.6 and 2.7, due to the dependency on `PyChef`_.
+
+
 
 Usage
 -----
@@ -44,7 +72,7 @@ and will try and load it's configuration from ``~/.chef/knife.rb`` or
 Package versions
 ^^^^^^^^^^^^^^^^
 
-Sous-chef will display package metadata from nodes if availible. It expects this
+Sous-chef will display package metadata from nodes if available. It expects this
 data to be in the following format::
 
 	"packages": {
@@ -73,66 +101,88 @@ For example, an RPM Ohai plugin could set the following node attributes::
 Debug mode
 ^^^^^^^^^^
 
-The app can be run in debug mode by using the ``create_debug_app`` function::
+The application can be run in debug mode by using the ``create_debug_app``
+function::
 
 	gunicorn 'sous_chef:create_debug_app()'
 
-The ``flask-debugtoolbar`` package is availible, the DebugToolbar extension will
-be used.
+If the ``flask-debugtoolbar`` package is available, the `DebugToolbar`_
+extension will be loaded and can be used to show debug information in a browser.
 
-.. _Flask instance folder: http://flask.pocoo.org/docs/config/#instance-folders
+.. _DebugToolbar: http://flask-debugtoolbar.readthedocs.org/en/latest/
 
-Installation
+
+
+Contributing
 ------------
 
-Install Sous-chef and Gunicorn with::
+Contributions are very welcome - issues and feature requests should use the
+`github issue tracker`_, and pull requests should be made against the develop
+branch.
 
-	pip install 'sous-chef[deploy]'
+Issues are assigned tags of *easy*, *medium* and *hard*, giving some indication
+of how easy a feature request should be to implement or how hard a bug will be
+to fix. Fixes or implementations for any unassigned issues are welcome.
 
-Requirements
-^^^^^^^^^^^^
+Bear in mind that new functionality should be useful for all users of the
+application - features that can only be used with internal components or that
+require significant infrastructure beyond a Chef server are unlikely to be
+approved (though are still open to discussion).
 
-Requires `Flask`_ and `PyChef`_. `Gunicorn`_ is the simplest method of
-deployment, but is not a requirement (allowing alternate WSGI servers to be
-used). Optionally uses `Flask Debug Toolbar`_ using the debug application.
+.. _github issue tracker: https://github.com/datasift/sous-chef/issues
 
-.. _Flask: http://flask.pocoo.org/
-.. _PyChef: https://github.com/coderanger/pychef
-.. _Gunicorn: http://gunicorn.org/
-.. _Flask Debug Toolbar: https://pypi.python.org/pypi/Flask-DebugToolbar
+Code Style and Design
+^^^^^^^^^^^^^^^^^^^^^
 
-Compatibility
-^^^^^^^^^^^^^
+Python code should use the style from `PEP8`_, and preferably pass all `flake8`_
+tests. Version numbers should use the `Semantic Versioning`_ specification, and
+are set in both ``setup.py`` and ``sous_chef/__init__.py``.
 
-Targets Python 2.6 and 2.7.
+As much functionality as possible should work 'out of the box' and run without
+needing explicit configuration - features that *do* require configuration to use
+should either fall back to an alternative or be off by default.
 
-PyChef is currently Python 2 only, but if or when it is availible for Python 3
-Sous-chef should have no problems.
+Optional integrations (such as the existing Flask DebugToolbar integration)
+should define requirements in ``extras_require`` instead of ``install_requires``
+and ensure that they do not crash if the requirement is not present.
+
+.. _PEP8: http://legacy.python.org/dev/peps/pep-0008/
+.. _flake8: https://flake8.readthedocs.org/en/2.0/
+.. _Semantic Versioning: http://semver.org/spec/v2.0.0.html
+
+
 
 Licence
 -------
 
-The MIT License (MIT)
+Sous-Chef is licensed under the MIT License.
+
+This project includes copies of `Bootstrap`_ and `jQuery`_, both of which are
+also licensed under the MIT Licence.
+
+.. _Bootstrap: http://getbootstrap.com/
+.. _jQuery: http://jquery.com/
 
 Copyright (c) 2014 DataSift <opensource@datasift.com>
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
 
 Authors
 -------

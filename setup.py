@@ -2,13 +2,13 @@ import setuptools
 
 setuptools.setup(
     name="sous-chef",
-    version="0.10.4",
+    version="1.0.0",
     url="https://github.com/datasift/sous-chef",
 
     author="Sam Clements",
     author_email="sam.clements@datasift.com",
 
-    description="A small webapp for viewing and searching Chef nodes",
+    description="A web frontend for the Chef server index",
     long_description=open('README.rst').read(),
 
     packages=setuptools.find_packages(),
