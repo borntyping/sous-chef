@@ -5,25 +5,73 @@ Sous-chef
     :target: https://pypi.python.org/pypi/sous-chef
     :alt: Latest PyPI version
 
-A small webapp for viewing and searching Chef nodes.
+A small webapp for viewing Chef nodes and other metadata. Currently supports
+nodes, roles, and environments, as well as package version information (see
+below).
 
 Usage
 -----
 
-::
+Run Sous-chef using `Gunicorn`_::
 
 	gunicorn 'sous_chef:create_app()'
 
-Sous-chef will read it's configuration from a ``config.py`` file in a `Flask
-instance folder`_ - for a global install this is
-``/usr/var/sous_chef-instance``, and for a virtualenv install this is
-``/``$VIRTUALENV/var/sous_chef-instance``.
+Configuration
+^^^^^^^^^^^^^
 
-The Flask settings ``CHEF_URL``, ``CHEF_KEY`` and ``CHEF_CLIENT`` are used to
-create a Chef API client, using PyChef's ``autoconfigure`` as a fallback.
-``DEFAULT_CHEF_ENVIRONMENT`` sets the Chef environment to show nodes from by
-default. See ``sous_chef/defaults.py`` for more information on the configuration
-options.
+Sous-chef will read it's configuration from one of two places, depending on how
+it was installed::
+
+	# Global install
+	/usr/var/sous_chef-instance/config.py
+
+	# Virtualenv install
+	$VIRTUALENV/var/sous_chef-instance/config.py
+
+An example configuration file might look like this::
+
+	# The URL of the Chef server
+	CHEF_URL = 'http://chef.example.com'
+
+	# The client name and key to use
+	CHEF_CLIENT = 'sous'
+	CHEF_KEY = '/usr/var/sous_chef-instance/sous.pem'
+
+If these are not set, PyChef's ``autoconfigure`` function is used as a fallback,
+and will try and load it's configuration from ``~/.chef/knife.rb`` or
+``/etc/chef/client.rb``.
+
+Package versions
+^^^^^^^^^^^^^^^^
+
+Sous-chef will display package metadata from nodes if availible. It expects this
+data to be in the following format::
+
+	"packages": {
+		"<package_type>": {
+			"<package_name>": {
+				"version": "<package_version"
+			},
+			...
+		},
+		...
+	}
+
+For example, an RPM Ohai plugin could set the following node attributes::
+
+	"packages": {
+		"rpm": {
+			"package-one": {
+				"version": "0.1.0",
+			},
+			"package-two": {
+				"version": "2.0.1",
+			}
+		}
+	}
+
+Debug mode
+^^^^^^^^^^
 
 The app can be run in debug mode by using the ``create_debug_app`` function::
 

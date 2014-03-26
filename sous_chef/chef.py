@@ -3,12 +3,14 @@
 from __future__ import absolute_import
 
 import collections
-import urllib # urllib.parse for Python 3
+import urllib  # urllib.parse for Python 3
 
 import chef
 
 
 class FlaskChefAPI(chef.ChefAPI):
+    """Used to build a API client from a Flask app's configuration"""
+
     @classmethod
     def configure(cls, app):
         keys = ['CHEF_URL', 'CHEF_KEY', 'CHEF_CLIENT']
@@ -17,9 +19,16 @@ class FlaskChefAPI(chef.ChefAPI):
 
 
 class PartialSearch(collections.Iterable):
-    """A class similar to the existing Search class in PyChef, using Chef's
+    """Chef partial search implemenation, using PyChef
+
+    A class similar to the existing Search class in PyChef, using Chef's
     partial search API - this only returns the requested keys and is much
-    faster than a full search."""
+    faster than a full search.
+
+    Chef Search documentation:
+        http://docs.opscode.com/essentials_search.html
+        http://docs.opscode.com/api_chef_server_search_index.html
+    """
 
     url = '/search'
 
