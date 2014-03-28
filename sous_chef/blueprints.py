@@ -20,12 +20,33 @@ def set_chef_api_client():
     flask.current_app.chef.set_default()
 
 
+def get_chef_environment():
+    """Return the session's selected chef_environment or the default"""
+    if 'chef_environment' in flask.session:
+        return flask.session['chef_environment']
+    else:
+        return flask.current_app.config['DEFAULT_CHEF_ENVIRONMENT']
+
+
+@ui.before_request
+def set_chef_environment():
+    """Ensure a list of environments is availible"""
+    flask.g.chef_environments = sorted(chef.Environment.list())
+    flask.g.chef_environment = get_chef_environment()
+
+
 # Nodes
+
+def get_nodes(search, keys={}, chef_environment=None):
+    environment = chef_environment or flask.g.chef_environment
+    search = '{0} AND chef_environment:{1}'.format(search, environment)
+    return PartialSearch('node', search, keys=keys)
+
 
 @ui.route('/', endpoint='home')
 @ui.route('/nodes/')
 def node_index():
-    nodes = PartialSearch('node', keys=['name', 'chef_environment'])
+    nodes = get_nodes('name:*', keys=['name', 'chef_environment'])
     return flask.render_template('node_index.html', nodes=nodes)
 
 
@@ -51,7 +72,7 @@ def role(name):
     return flask.render_template(
         'role.html',
         role=chef.Role(name),
-        nodes=PartialSearch('node', 'roles:' + name))
+        nodes=get_nodes('roles:' + name))
 
 
 # Environments
@@ -67,7 +88,23 @@ def environment(name):
     return flask.render_template(
         'environment.html',
         environment=chef.Environment(name),
-        nodes=PartialSearch('node', 'chef_environment:' + name))
+        nodes=get_nodes('name:*', chef_environment=name))
+
+
+@ui.route('/set/environment/<string:name>')
+def set_environment(name):
+    if name == 'all':
+        environment = '*'
+    elif name in chef.Environment.list():
+        environment = name
+    else:
+        flask.abort(404)
+
+    flask.session['chef_environment'] = environment
+    flask.session.permanent = True
+
+    return flask.redirect(
+        flask.request.referrer or flask.url_for('ui.environment', name=name))
 
 
 # Packages
@@ -79,23 +116,3 @@ def package(type, name):
     })
     return flask.render_template(
         'package.html', package_type=type, package_name=name, nodes=nodes)
-
-
-# def current_envionment():
-#     if not 'chef_environment' in flask.session:
-#         flask.session['chef_environment'] = flask.current_app.config.get(
-#             'DEFAULT_CHEF_ENVIRONMENT', '_default')
-#     return flask.session['chef_environment']
-
-# @ui.before_request
-# def set_environment_variables():
-#     """Ensure a list of environments is availible"""
-#     flask.g.chef_environments = sorted(chef.Environment.list())
-#     flask.g.chef_environment = current_envionment()
-
-# @ui.route('/environments/<string:name>/select')
-# def select_environment(name):
-#     if name in flask.g.chef_environments:
-#         flask.session['chef_environment'] = name
-#         flask.session.permanent = True
-#     return flask.redirect(flask.request.referrer or flask.url_for('ui.home'))

@@ -6,6 +6,11 @@ header a.environment:hover { color: #666; }
 a code { color: #428BCA; background-color: #F4F8FA; }
 a:hover code { color: #2A6496; }
 
+/* Highlight 'All environments' in the environment dropdown */
+#set_environment_all {
+	font-weight: bold;
+}
+
 /* Add margins around the footer so it's not close to the text */
 footer {
 	padding-top: 1em;
