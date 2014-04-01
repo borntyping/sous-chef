@@ -28,10 +28,6 @@
     <p class="text-warning">
       {{ nodes_by_version | count }} versions of {{ package_name }} are installed across {{ nodes | count }} nodes.
     </p>
-  {% else %}
-    <p class="text-success">
-      Only one version of this package is installed :)
-    </p>
   {% endif %}
 
   {% for group in nodes_by_version %}

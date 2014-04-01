@@ -31,14 +31,14 @@ def pop_chef_environment(endpoint, values):
 def put_chef_environment(endpoint, values):
     """Set a default environment in calls to url_for"""
     expects = flask.current_app.url_map.is_endpoint_expecting
-    if expects(endpoint, 'environment'):
+    if expects(endpoint, 'environment') and flask.g.chef_environment != '*':
         values.setdefault('environment', flask.g.chef_environment)
 
 
 # Environments
 
 @ui.route('/', endpoint='home')
-@ui.route('/environments/')
+@ui.route('/environments')
 def environments():
     return flask.render_template(
         'environments.html', environments=flask.g.chef_environments)
