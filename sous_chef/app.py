@@ -13,8 +13,7 @@ __all__ = ['create_app']
 def create_app():
     app = flask.Flask('sous_chef', instance_relative_config=True)
 
-    # Load configuration from defaults and an optional instance config file
-    app.config.from_object('sous_chef.defaults')
+    # Load configuration from an optional instance config file
     app.config.from_pyfile('config.py')
 
     # Configure chef before the first request
