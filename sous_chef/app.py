@@ -35,6 +35,7 @@ def create_debug_app():
     except ImportError:
         pass
     else:
+        app.config['SECRET_KEY'] = 'debug-secret-key'
         app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
         DebugToolbarExtension(app)
 
