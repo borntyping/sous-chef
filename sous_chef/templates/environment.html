@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
-{% from 'node_index.html' import list_nodes %}
-{% block title %}Chef environment: {{ environment.name }}{% endblock %}
-{% block header %}{{ environment.name }} <small>{{ environment.description }}</small>{% endblock %}
+{% from 'nodes.html' import list_nodes %}
+{% block title %}Chef Environment: {{ environment['name'] }}{% endblock %}
+{% block header %}{{ environment['name'] }} <small>{{ environment['description'] }}</small>{% endblock %}
 {% block body %}
 <div class="row">
   <div class="col-md-6">
@@ -11,9 +11,9 @@
 
   <div class="col-md-6">
     <h3>Cookbook versions</h3>
-  {% if environment.cookbook_versions %}
+  {% if environment['cookbook_versions'] %}
     <ul>
-    {% for cookbook, version in environment.cookbook_versions.items() %}
+    {% for cookbook, version in environment['cookbook_versions'].items() %}
       <li>
         <code>{{ cookbook }}</code> <code>{{ version }}</code>
       </li>

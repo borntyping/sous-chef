@@ -1,3 +1,6 @@
+/* Give extra space to the fixed navbar */
+body { padding-top: 70px; }
+
 /* Mute environment links in headers */
 header a.environment { color: #999; }
 header a.environment:hover { color: #666; }

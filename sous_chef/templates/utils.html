@@ -1,0 +1,7 @@
+{% macro list(iterable) -%}
+  <ul>
+  {% for item in iterable | sort %}
+    <li><code>{{ item }}</code></li>
+  {% endfor %}
+  </ul>
+{%- endmacro %}
