@@ -3,115 +3,128 @@
 from __future__ import absolute_import
 
 import flask
-import chef
 import chef.exceptions
 
-from sous_chef.chef import PartialSearch, get_node
-
 __all__ = ['ui']
-
 
 ui = flask.Blueprint('ui', __name__)
 
 
-@ui.before_request
-def set_chef_api_client():
-    """Set the global ChefAPI object as the default for this thread"""
-    flask.current_app.chef.set_default()
-
-
-def get_chef_environment():
-    """Return the session's selected chef_environment or the default"""
-    if 'chef_environment' in flask.session:
-        return flask.session['chef_environment']
-    else:
-        return flask.current_app.config['DEFAULT_CHEF_ENVIRONMENT']
+@ui.errorhandler(chef.exceptions.ChefServerNotFoundError)
+def not_found_error(error):
+    return "The Chef Server could not find the requested item", 404
 
 
 @ui.before_request
-def set_chef_environment():
+def get_chef_environments():
     """Ensure a list of environments is availible"""
-    flask.g.chef_environments = sorted(chef.Environment.list())
-    flask.g.chef_environment = get_chef_environment()
+    flask.g.chef_environments = flask.current_app.chef.get('environments')
 
 
-# Nodes
-
-def get_nodes(search, keys={}, chef_environment=None):
-    environment = chef_environment or flask.g.chef_environment
-    search = '{0} AND chef_environment:{1}'.format(search, environment)
-    return PartialSearch('node', search, keys=keys)
+@ui.url_value_preprocessor
+def pop_chef_environment(endpoint, values):
+    """Set the current environment, defaulting to * for all environments"""
+    flask.g.chef_environment = values.pop('environment', '*')
 
 
-@ui.route('/', endpoint='home')
-@ui.route('/nodes/')
-def node_index():
-    nodes = get_nodes('name:*', keys=['name', 'chef_environment'])
-    return flask.render_template('node_index.html', nodes=nodes)
-
-
-@ui.route('/nodes/<string:name>')
-def node(name):
-    return flask.render_template('node.html', node=get_node(name, [
-        'chef_environment',
-        'roles',
-        'run_list',
-        'packages'
-    ]))
-
-
-# Roles
-
-@ui.route('/roles/')
-def role_index():
-    return flask.render_template('role_index.html', roles=chef.Role.list())
-
-
-@ui.route('/roles/<string:name>')
-def role(name):
-    return flask.render_template(
-        'role.html',
-        role=chef.Role(name),
-        nodes=get_nodes('roles:' + name))
+@ui.url_defaults
+def put_chef_environment(endpoint, values):
+    """Set a default environment in calls to url_for"""
+    expects = flask.current_app.url_map.is_endpoint_expecting
+    if expects(endpoint, 'environment'):
+        values.setdefault('environment', flask.g.chef_environment)
 
 
 # Environments
 
+@ui.route('/', endpoint='home')
 @ui.route('/environments/')
-def environment_index():
+def environments():
     return flask.render_template(
-        'environment_index.html', environments=chef.Environment.list())
+        'environments.html', environments=flask.g.chef_environments)
 
 
-@ui.route('/environments/<string:name>')
-def environment(name):
+@ui.route('/<string:environment>')
+@ui.route('/environments/<string:environment>')
+def environment():
+    environment = flask.current_app.chef.get(
+        'environments', flask.g.chef_environment)
+    nodes = flask.current_app.chef.partial_search(
+        'node', {'chef_environment': flask.g.chef_environment})
     return flask.render_template(
-        'environment.html',
-        environment=chef.Environment(name),
-        nodes=get_nodes('name:*', chef_environment=name))
+        'environment.html', environment=environment, nodes=nodes)
 
 
-@ui.route('/set/environment/<string:name>')
-def set_environment(name):
-    if name == 'all':
-        environment = '*'
-    elif name in chef.Environment.list():
-        environment = name
-    else:
-        flask.abort(404)
+# Roles
 
-    flask.session['chef_environment'] = environment
-    flask.session.permanent = True
+@ui.route('/roles')
+@ui.route('/<environment>/roles')
+def roles():
+    roles = flask.current_app.chef.get('roles').keys()
+    return flask.render_template('roles.html', roles=roles)
 
-    return flask.redirect(
-        flask.request.referrer or flask.url_for('ui.environment', name=name))
+
+@ui.route('/roles/<string:role>')
+@ui.route('/<environment>/roles/<string:role>')
+def role(role):
+    _role = flask.current_app.chef.get('roles', role)
+    nodes = flask.current_app.chef.partial_search('node', {
+        'chef_environment': flask.g.chef_environment,
+        'roles': role
+    })
+    return flask.render_template('role.html', role=_role, nodes=nodes)
+
+
+# Nodes
+
+@ui.route('/nodes')
+@ui.route('/<environment>/nodes')
+def nodes():
+    nodes = flask.current_app.chef.partial_search('node', {
+        'chef_environment': flask.g.chef_environment
+    })
+    return flask.render_template('nodes.html', nodes=nodes)
+
+
+def get_node(name, keys={}):
+    nodes = list(flask.current_app.chef.partial_search('node', {
+        'chef_environment': flask.g.chef_environment,
+        'name': name
+    }, keys))
+
+    if len(nodes) != 1:
+        raise chef.exceptions.ChefServerNotFoundError()
+
+    return nodes[0]
+
+
+@ui.route('/nodes/<string:node>')
+def redirect_node(node):
+    node = flask.current_app.chef.node(node)
+    return flask.redirect(flask.url_for(
+        '.node', node=node['name'], environment=node['chef_environment']))
+
+
+@ui.route('/<environment>/nodes/<string:node>')
+def node(node):
+    node = flask.current_app.chef.node(node, [
+        'run_list',
+        'role',
+        'recipes',
+        'packages'
+    ])
+    return flask.render_template('node.html', node=node)
 
 
 # Packages
 
 @ui.route('/packages/<string:type>/<string:name>')
+@ui.route('/<environment>/packages/<string:type>/<string:name>')
 def package(type, name):
-    nodes = get_nodes('packages_{0}:{1}'.format(type, name), keys={
+    nodes = flask.current_app.chef.partial_search('node', {
+        'chef_environment': flask.g.chef_environment,
+        'packages_' + type: name
+    }, {
         'package_version': ['packages', type, name, 'version']
     })
     return flask.render_template(

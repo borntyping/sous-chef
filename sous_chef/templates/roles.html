@@ -6,7 +6,7 @@
 <ul class="attempt-columns">
 {% for role in roles | sort %}
   <li>
-    <a href="{{ url_for('.role', name=role) }}">
+    <a href="{{ url_for('.role', role=role) }}">
       <code>{{ role }}</code>
     </a>
   </li>

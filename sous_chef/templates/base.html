@@ -12,7 +12,7 @@
     <script src="{{ url_for('static', filename='bootstrap-3.1.1.min.js')}}"></script>
   </head>
   <body>
-      <nav class="navbar navbar-default navbar-static-top" role="navigation">
+      <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
         <div class="container">
           <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
@@ -21,30 +21,29 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="{{ url_for('.home') }}">Sous-chef</a>
+            <a class="navbar-brand" href="/">Sous-chef</a>
           </div>
 
-          <!-- Collect the nav links, forms, and other content for toggling -->
           <div class="collapse navbar-collapse" id="navbar">
             <ul class="nav navbar-nav navbar-left">
-              <li><a href="{{ url_for('.environment_index') }}">Environments</a></li>
-              <li><a href="{{ url_for('.role_index') }}">Roles</a></li>
-              <li><a href="{{ url_for('.node_index') }}">Nodes</a></li>
+              <li><a href="{{ url_for('ui.environments') }}">Environments</a></li>
+              <li><a href="{{ url_for('ui.roles') }}">Roles</a></li>
+              <li><a href="{{ url_for('ui.nodes') }}">Nodes</a></li>
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
               <li class="dropdown">
-                <a href="#null" class="dropdown-toggle" data-toggle="dropdown">
-                {%- if g.chef_environment == '*' -%}
+                <a href="{{ url_for('.environments') }}" class="dropdown-toggle" data-toggle="dropdown">
+                {% if g.chef_environment == '*' %}
                   Showing nodes from all environments
-                {%- else -%}
-                  Showing nodes from <b>{{ g.chef_environment }}</b>
-                {%- endif %} <b class="caret"></b>
+                {% else %}
+                  Showing nodes from <strong>{{ g.chef_environment }}</strong>
+                {% endif %} <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a id="set_environment_all" href="{{ url_for('.set_environment', name='all') }}">All environments</a></li>
-                {% for environment in g.chef_environments -%}
-                  <li><a id="set_environment_{{ environment }}" href="{{ url_for('.set_environment', name=environment) }}">{{ environment }}</a></li>
+                  <li><a id="environment_all" href="{{ url_for(request.endpoint, environment='*', **request.view_args) }}">All environments</a></li>
+                {% for environment in g.chef_environments | sort -%}
+                  <li><a id="environment_{{ environment }}" href="{{ url_for(request.endpoint, environment=environment, **request.view_args) }}">{{ environment }}</a></li>
                 {% endfor %}
                 </ul>
               </li>
@@ -64,15 +63,15 @@
 
       {% block body %}
       <div class="row">
-        <div class="col-md-12">
-          {% block content %}{% endblock %}
-        </div>
+        <div class="col-md-12">{% block content %}{% endblock %}</div>
       </div>
       {% endblock %}
 
       <footer class="row">
         <div class="col-sm-12">
-          <p class="text-muted"><a href="https://github.com/datasift/sous-chef">Sous-chef</a> by <a href="https://github.com/borntyping">Sam Clements</a> and <a href="https://github.com/datasift">DataSift</a>. Built with <a href="http://flask.pocoo.org/">Flask</a> and <a href="https://github.com/coderanger/pychef">PyChef</a>. Source distributed under the MIT licence.</p>
+          <p class="text-muted">
+            <a href="https://github.com/datasift/sous-chef">Sous-chef</a> by <a href="https://github.com/borntyping">Sam Clements</a> and <a href="https://github.com/datasift">DataSift</a>. Built with <a href="http://flask.pocoo.org/">Flask</a> and <a href="https://github.com/coderanger/pychef">PyChef</a>. Source distributed under the MIT licence.
+          </p>
         </div>
       </footer>
     </div>

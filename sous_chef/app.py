@@ -13,12 +13,11 @@ __all__ = ['create_app']
 def create_app():
     app = flask.Flask('sous_chef', instance_relative_config=True)
 
-    # Load configuration from defaults and an optional instance config file
-    app.config.from_object('sous_chef.defaults')
+    # Load configuration from an optional instance config file
     app.config.from_pyfile('config.py')
 
     # Configure chef before the first request
-    app.chef = sous_chef.chef.FlaskChefAPI.configure(app)
+    app.chef = sous_chef.chef.Chef.from_flask_app(app)
 
     # Register blueprints - currently only the user interface
     app.register_blueprint(sous_chef.blueprints.ui)
@@ -36,6 +35,7 @@ def create_debug_app():
     except ImportError:
         pass
     else:
+        app.config['SECRET_KEY'] = 'debug-secret-key'
         app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
         DebugToolbarExtension(app)
 

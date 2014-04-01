@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
-{% from 'node_index.html' import list_nodes, list_nodes_by_environment %}
+{% from 'utils.html' import list %}
+{% from 'nodes.html' import list_nodes, list_nodes_by_environment %}
+
 {% block title %}Chef role: {{ role.name }}{% endblock %}
 {% block header %}{{ role.name }} <small>{{ role.description }}</small>{% endblock %}
+
 {% block body %}
 <div class="row">
   <div class="col-md-6">
@@ -11,16 +14,11 @@
 
   <div class="col-md-6">
     <h3>Run list</h3>
-    {% if role.env_run_lists %}
+  {% if role.env_run_lists %}
     <p class="text-warning">This role uses environment run lists.</p>
-    {% endif %}
-    <ul>
-    {% for item in role.run_list %}
-      <li>
-        <code>{{ item }}</code>
-      </li>
-    {% endfor %}
-    </ul>
+  {% else %}
+    {{ list(role['run_list']) }}
+  {% endif %}
   </div>
 </div>
 {% endblock %}
