@@ -5,7 +5,8 @@ from __future__ import absolute_import
 import collections
 import urllib  # urllib.parse for Python 3
 
-import chef
+import chef.api
+import chef.exceptions
 
 
 class Chef(object):
@@ -20,7 +21,7 @@ class Chef(object):
         return cls(*(app.config[x] for x in config_keys))
 
     def __init__(self, url, key, client):
-        self.client = chef.ChefAPI(url, key, client)
+        self.client = chef.api.ChefAPI(url, key, client)
 
     def _get(self, path):
         return self.client.api_request('GET', path)
@@ -71,8 +72,19 @@ class Chef(object):
         # {rows: [{data: {...}, url: '...'}], start: 0, total: 1}
         results = self._search(index, query, keys, rows, start)
 
-        # Return an iterator over the returned data
-        return (row['data'] for row in results['rows'])
+        # Return a list containing the returned data for each row
+        return [row['data'] for row in results['rows']]
+
+    # Higher-level search APIs
+
+    def node(self, name, keys={}):
+        """Returns a single node or raises an error"""
+        nodes = self.partial_search('node', {'name': name}, keys)
+
+        if len(nodes) != 1:
+            raise chef.exceptions.ChefServerNotFoundError()
+
+        return nodes[0]
 
 
 class FlaskChefAPI(chef.ChefAPI):

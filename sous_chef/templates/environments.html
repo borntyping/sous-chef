@@ -4,7 +4,7 @@
 <ul>
 {% for environment in environments | sort %}
   <li>
-    <a href="{{ url_for('environment.home', environment=environment) }}">
+    <a href="{{ url_for('.environment', environment=environment) }}">
       <code>{{ environment }}</code>
     </a>
   </li>

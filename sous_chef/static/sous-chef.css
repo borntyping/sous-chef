@@ -10,7 +10,7 @@ a code { color: #428BCA; background-color: #F4F8FA; }
 a:hover code { color: #2A6496; }
 
 /* Highlight 'All environments' in the environment dropdown */
-#set_environment_all {
+#environment_all {
 	font-weight: bold;
 }
 

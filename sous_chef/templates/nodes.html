@@ -18,7 +18,7 @@
   <div class="nodes">
   {% if g.chef_environment == '*' %}
     {% for group in nodes | groupby('chef_environment') %}
-      <h4><a class="environment" href="{{ url_for('environment.home', environment=group.grouper) }}">{{ group.grouper }}</a></h3>
+      <h4><a class="environment" href="{{ url_for(request.endpoint, environment=group.grouper, **request.view_args) }}">{{ group.grouper }}</a></h3>
       {{ list_nodes(group.list) }}
     {% endfor %}
   {% else %}
