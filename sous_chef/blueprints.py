@@ -60,7 +60,9 @@ def environment():
 @ui.route('/roles')
 @ui.route('/<environment>/roles')
 def roles():
-    roles = flask.current_app.chef.get('roles').keys()
+    search = {'roles': '*', 'chef_environment': flask.g.chef_environment}
+    nodes = flask.current_app.chef.partial_search('node', search, ['roles'])
+    roles = set((r for node in nodes for r in node['roles']))
     return flask.render_template('roles.html', roles=roles)
 
 

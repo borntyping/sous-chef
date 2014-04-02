@@ -3,6 +3,13 @@
 {% block title %}Chef roles{% endblock %}
 
 {% block content %}
+<div class="alert alert-info">
+  Only showing roles assigned to nodes
+  {%- if g.chef_environment != '*' %}
+  in the <strong>{{ g.chef_environment }}</strong> environment
+  {%- endif -%}.
+</div>
+
 <ul class="attempt-columns">
 {% for role in roles | sort %}
   <li>

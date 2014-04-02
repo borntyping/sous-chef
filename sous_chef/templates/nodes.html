@@ -14,6 +14,7 @@
   </ul>
 {%- endmacro %}
 
+{# Only lists nodes by environment when g.chef_environment is '*' #}
 {% macro list_nodes_by_environment(nodes) -%}
   <div class="nodes">
   {% if g.chef_environment == '*' %}
