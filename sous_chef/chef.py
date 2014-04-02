@@ -73,14 +73,3 @@ class Chef(object):
 
         # Return a list containing the returned data for each row
         return [row['data'] for row in results['rows']]
-
-    # Higher-level search APIs
-
-    def node(self, name, keys={}):
-        """Returns a single node or raises an error"""
-        nodes = self.partial_search('node', {'name': name}, keys)
-
-        if len(nodes) != 1:
-            raise chef.exceptions.ChefServerNotFoundError()
-
-        return nodes[0]

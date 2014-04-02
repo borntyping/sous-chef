@@ -2,7 +2,7 @@
 
 from __future__ import absolute_import
 
-__version__ = '2.0.1'
+__version__ = '2.1.1'
 __author__ = 'Sam Clements <sam.clements@datasift.com>'
 __all__ = ['create_app', 'create_debug_app']
 

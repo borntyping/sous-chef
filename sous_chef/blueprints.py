@@ -10,9 +10,10 @@ __all__ = ['ui']
 ui = flask.Blueprint('ui', __name__)
 
 
+@ui.errorhandler(404)
 @ui.errorhandler(chef.exceptions.ChefServerNotFoundError)
-def not_found_error(error):
-    return "The Chef Server could not find the requested item", 404
+def not_found(error):
+    return flask.render_template('404.html', error=error), 404
 
 
 @ui.before_request
@@ -89,33 +90,35 @@ def nodes():
 
 
 def get_node(name, keys={}):
-    nodes = list(flask.current_app.chef.partial_search('node', {
+    """Returns a single row or raises an error"""
+    nodes = flask.current_app.chef.partial_search('node', {
         'chef_environment': flask.g.chef_environment,
         'name': name
-    }, keys))
+    }, keys)
 
-    if len(nodes) != 1:
-        raise chef.exceptions.ChefServerNotFoundError()
-
-    return nodes[0]
+    if not nodes:
+        raise chef.exceptions.ChefServerNotFoundError('No rows returned')
+    elif len(nodes) > 1:
+        raise chef.exceptions.ChefServerNotFoundError('Multiple rows returned')
+    else:
+        return nodes[0]
 
 
 @ui.route('/nodes/<string:node>')
 def redirect_node(node):
-    node = flask.current_app.chef.node(node)
+    node = get_node(node)
     return flask.redirect(flask.url_for(
         '.node', node=node['name'], environment=node['chef_environment']))
 
 
 @ui.route('/<environment>/nodes/<string:node>')
 def node(node):
-    node = flask.current_app.chef.node(node, [
+    return flask.render_template('node.html', node=get_node(node, [
         'run_list',
         'role',
         'recipes',
         'packages'
-    ])
-    return flask.render_template('node.html', node=node)
+    ]))
 
 
 # Packages
