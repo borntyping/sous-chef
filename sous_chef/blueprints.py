@@ -10,9 +10,10 @@ __all__ = ['ui']
 ui = flask.Blueprint('ui', __name__)
 
 
+@ui.errorhandler(404)
 @ui.errorhandler(chef.exceptions.ChefServerNotFoundError)
-def not_found_error(error):
-    return "The Chef Server could not find the requested item", 404
+def not_found(error):
+    return flask.render_template('404.html', error=error), 404
 
 
 @ui.before_request
