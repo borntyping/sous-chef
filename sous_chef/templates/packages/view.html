@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% from 'nodes.html' import list_nodes, list_nodes_by_environment %}
 
-{% block title %}{{ package_name }} - {{ package_type }} package{% endblock %}
-{% block header %}{{ package_name }} <small>{{ package_type }} package</small>{% endblock %}
+{% block title %}{{ name }} - {{ type }} package{% endblock %}
+{% block header %}{{ name }} <small>{{ type }} package</small>{% endblock %}
 
 {% set nodes_by_version = nodes | groupby('package_version') %}
 
@@ -21,12 +21,13 @@
   {% endif %}
   </div>
 </div>
+
 <div class="row">
   <div class="col-md-12">
     <h3>Nodes by package version</h3>
   {% if nodes_by_version | count > 1 %}
     <p class="text-warning">
-      {{ nodes_by_version | count }} versions of {{ package_name }} are installed across {{ nodes | count }} nodes.
+      {{ nodes_by_version | count }} versions of {{ name }} are installed across {{ nodes | count }} nodes.
     </p>
   {% endif %}
 

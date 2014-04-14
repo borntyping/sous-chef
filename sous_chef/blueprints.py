@@ -2,6 +2,8 @@
 
 from __future__ import absolute_import
 
+import collections
+
 import flask
 import chef.exceptions
 
@@ -123,6 +125,39 @@ def node(node):
 
 # Packages
 
+@ui.route('/packages')
+@ui.route('/<environment>/packages')
+def packages():
+    nodes = flask.current_app.chef.partial_search('node', {
+        'packages': '*',
+        'chef_environment': flask.g.chef_environment
+    }, ['packages'])
+
+    packages = collections.defaultdict(set)
+
+    for node in nodes:
+        for package_type in node['packages']:
+            for package in node['packages'][package_type]:
+                packages[package_type].add(package)
+
+    return flask.render_template(
+        'packages/index.html', packages=packages)
+
+
+@ui.route('/packages/<string:type>')
+@ui.route('/<environment>/packages/<string:type>')
+def packages_by_type(type):
+    nodes = flask.current_app.chef.partial_search('node', {
+        'packages_' + type: '*',
+        'chef_environment': flask.g.chef_environment
+    }, {
+        'packages': ['packages', type]
+    })
+    packages = set((p for node in nodes for p in node['packages']))
+    return flask.render_template(
+        'packages/index.html', packages=packages, type=type)
+
+
 @ui.route('/packages/<string:type>/<string:name>')
 @ui.route('/<environment>/packages/<string:type>/<string:name>')
 def package(type, name):
@@ -133,4 +168,4 @@ def package(type, name):
         'package_version': ['packages', type, name, 'version']
     })
     return flask.render_template(
-        'package.html', package_type=type, package_name=name, nodes=nodes)
+        'packages/view.html', type=type, name=name, nodes=nodes)
