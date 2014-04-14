@@ -1,11 +1,8 @@
 {% extends 'base.html' %}
-{% from 'nodes.html' import list_nodes, list_nodes_by_environment %}
-
+{% from 'nodes/macros.html' import list_nodes, list_nodes_by_environment %}
 {% block title %}{{ name }} - {{ type }} package{% endblock %}
 {% block header %}{{ name }} <small>{{ type }} package</small>{% endblock %}
-
 {% set nodes_by_version = nodes | groupby('package_version') %}
-
 {% block body %}
 <div class="row">
   <div class="col-md-12">

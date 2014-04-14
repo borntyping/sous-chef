@@ -1,0 +1,26 @@
+{% macro list_packages(packages, package_type) %}
+  <ul>
+  {% for package in packages | sort %}
+    <li>
+     <a href="{{ url_for('.package', type=package_type, name=package) }}">
+          <code>{{ package }}</code>
+        </a>
+    </li>
+  {% endfor %}
+  </ul>
+{% endmacro %}
+
+{% macro list_packages_by_type(packages) %}
+<div class="row">
+  <div class="col-md-12">
+  {% for package_type, packages in packages | dictsort | reverse %}
+    <h3>
+      <a href="{{ url_for('.packages_by_type', type=package_type) }}">
+        <code>{{ package_type }}</code> packages
+      </a>
+    </h3>
+    {{ list_packages(packages, package_type) }}
+  {% endfor %}
+  </div>
+</div>
+{% endmacro %}

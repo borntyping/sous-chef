@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% from 'packages/macros.html' import list_packages_by_type %}
+{% block title %}Installed packages{% endblock %}
+{% block content %}
+  {{ list_packages_by_type(packages) }}
+{% endblock content %}

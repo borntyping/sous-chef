@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
-{% from 'utils.html' import list %}
-{% from 'nodes.html' import list_nodes, list_nodes_by_environment %}
+{% from 'macros.html' import list %}
+{% from 'nodes/macros.html' import list_nodes_by_environment %}
 
 {% block title %}Chef role: {{ role.name }}{% endblock %}
 {% block header %}{{ role.name }} <small>{{ role.description }}</small>{% endblock %}

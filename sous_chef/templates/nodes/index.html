@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block title %}Chef nodes{% endblock %}
+{% from 'nodes/macros.html' import list_nodes_by_environment %}
+{% block content %}
+  {{ list_nodes_by_environment(nodes) }}
+{% endblock %}

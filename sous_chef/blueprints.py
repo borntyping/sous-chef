@@ -72,7 +72,7 @@ def single_row(results):
 @ui.route('/environments')
 def environments():
     return flask.render_template(
-        'environments.html', environments=flask.g.chef_environments)
+        'environments/index.html', environments=flask.g.chef_environments)
 
 
 @ui.route('/<string:environment>')
@@ -82,7 +82,7 @@ def environment():
         'environments', flask.g.chef_environment)
     nodes = partial_search_nodes({'name': '*'})
     return flask.render_template(
-        'environment.html', environment=environment, nodes=nodes)
+        'environments/view.html', environment=environment, nodes=nodes)
 
 
 # Roles
@@ -92,7 +92,7 @@ def environment():
 def roles():
     nodes = partial_search_nodes({'roles': '*'}, ['roles'])
     roles = set((r for node in nodes for r in node['roles']))
-    return flask.render_template('roles.html', roles=roles)
+    return flask.render_template('roles/index.html', roles=roles)
 
 
 @ui.route('/roles/<string:role>')
@@ -100,7 +100,7 @@ def roles():
 def role(role):
     nodes = partial_search_nodes({'roles': role})
     role = flask.current_app.chef.get('roles', role)
-    return flask.render_template('role.html', role=role, nodes=nodes)
+    return flask.render_template('roles/view.html', role=role, nodes=nodes)
 
 
 # Nodes
@@ -108,7 +108,7 @@ def role(role):
 @ui.route('/nodes')
 @ui.route('/<environment>/nodes')
 def nodes():
-    return flask.render_template('nodes.html', nodes=partial_search_nodes({}))
+    return flask.render_template('nodes/index.html', nodes=partial_search_nodes({}))
 
 
 @ui.route('/nodes/<string:node>')
@@ -122,7 +122,7 @@ def redirect_node(node):
 def node(node):
     node = single_row(partial_search_nodes(
         {'name': node}, ['run_list', 'role', 'recipes', 'packages']))
-    return flask.render_template('node.html', node=node)
+    return flask.render_template('nodes/view.html', node=node)
 
 
 # Packages
@@ -139,7 +139,7 @@ def packages():
                 packages[package_type].add(package)
 
     return flask.render_template(
-        'packages/index.html', packages=packages)
+        'packages/index_by_type.html', packages=packages)
 
 
 @ui.route('/packages/<string:type>')

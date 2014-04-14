@@ -38,7 +38,7 @@
 {% if node['packages'] %}
 <div class="row">
   <div class="col-md-12">
-  {% for package_type, packages in node['packages'] | dictsort %}
+  {% for package_type, packages in node['packages'] | dictsort | reverse %}
     <h3>Packages (<code>{{ package_type }}</code>)</h3>
     <table class="table table-condensed table-hover">
       <thead>
