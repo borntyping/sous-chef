@@ -38,6 +38,37 @@ def put_chef_environment(endpoint, values):
         values.setdefault('environment', flask.g.chef_environment)
 
 
+# Chef client wrappers
+
+def partial_search(index, search, keys=None):
+    """Shortcut for the chef client partial_search function"""
+    return flask.current_app.chef.partial_search(index, search, keys)
+
+
+def partial_search_nodes(search, keys={}):
+    """Uses g.chef_environment and adds useful keys"""
+    search.setdefault('chef_environment', flask.g.chef_environment)
+
+    keys = flask.current_app.chef.normalise_keys(keys)
+    keys.setdefault('name', ['name'])
+    keys.setdefault('chef_environment', ['chef_environment'])
+
+    return partial_search('node', search, keys)
+
+
+def partial_search_node(name, keys={}):
+    """Returns a single node or raises an error"""
+    nodes = partial_search_nodes({'name': name}, keys)
+
+    if not nodes:
+        raise chef.exceptions.ChefServerNotFoundError('No node found')
+    elif len(nodes) > 1:
+        raise chef.exceptions.ChefServerNotFoundError(
+            'Multiple nodes returned, expected one')
+
+    return nodes[0]
+
+
 # Environments
 
 @ui.route('/', endpoint='home')
@@ -52,8 +83,7 @@ def environments():
 def environment():
     environment = flask.current_app.chef.get(
         'environments', flask.g.chef_environment)
-    nodes = flask.current_app.chef.partial_search(
-        'node', {'chef_environment': flask.g.chef_environment})
+    nodes = partial_search_nodes({'name': '*'})
     return flask.render_template(
         'environment.html', environment=environment, nodes=nodes)
 
@@ -63,8 +93,7 @@ def environment():
 @ui.route('/roles')
 @ui.route('/<environment>/roles')
 def roles():
-    search = {'roles': '*', 'chef_environment': flask.g.chef_environment}
-    nodes = flask.current_app.chef.partial_search('node', search, ['roles'])
+    nodes = partial_search_nodes({'roles': '*'}, ['roles'])
     roles = set((r for node in nodes for r in node['roles']))
     return flask.render_template('roles.html', roles=roles)
 
@@ -72,12 +101,9 @@ def roles():
 @ui.route('/roles/<string:role>')
 @ui.route('/<environment>/roles/<string:role>')
 def role(role):
-    _role = flask.current_app.chef.get('roles', role)
-    nodes = flask.current_app.chef.partial_search('node', {
-        'chef_environment': flask.g.chef_environment,
-        'roles': role
-    })
-    return flask.render_template('role.html', role=_role, nodes=nodes)
+    nodes = partial_search_nodes({'roles': role})
+    role = flask.current_app.chef.get('roles', role)
+    return flask.render_template('role.html', role=role, nodes=nodes)
 
 
 # Nodes
@@ -85,42 +111,20 @@ def role(role):
 @ui.route('/nodes')
 @ui.route('/<environment>/nodes')
 def nodes():
-    nodes = flask.current_app.chef.partial_search('node', {
-        'chef_environment': flask.g.chef_environment
-    })
-    return flask.render_template('nodes.html', nodes=nodes)
-
-
-def get_node(name, keys={}):
-    """Returns a single row or raises an error"""
-    nodes = flask.current_app.chef.partial_search('node', {
-        'chef_environment': flask.g.chef_environment,
-        'name': name
-    }, keys)
-
-    if not nodes:
-        raise chef.exceptions.ChefServerNotFoundError('No rows returned')
-    elif len(nodes) > 1:
-        raise chef.exceptions.ChefServerNotFoundError('Multiple rows returned')
-    else:
-        return nodes[0]
+    return flask.render_template('nodes.html', nodes=partial_search_nodes({}))
 
 
 @ui.route('/nodes/<string:node>')
 def redirect_node(node):
-    node = get_node(node)
+    node = partial_search_node(node)
     return flask.redirect(flask.url_for(
         '.node', node=node['name'], environment=node['chef_environment']))
 
 
 @ui.route('/<environment>/nodes/<string:node>')
 def node(node):
-    return flask.render_template('node.html', node=get_node(node, [
-        'run_list',
-        'role',
-        'recipes',
-        'packages'
-    ]))
+    return flask.render_template('node.html', node=partial_search_node(
+        node, ['run_list', 'role', 'recipes', 'packages']))
 
 
 # Packages
@@ -128,13 +132,9 @@ def node(node):
 @ui.route('/packages')
 @ui.route('/<environment>/packages')
 def packages():
-    nodes = flask.current_app.chef.partial_search('node', {
-        'packages': '*',
-        'chef_environment': flask.g.chef_environment
-    }, ['packages'])
+    nodes = partial_search_nodes({'packages': '*'}, ['packages'])
 
     packages = collections.defaultdict(set)
-
     for node in nodes:
         for package_type in node['packages']:
             for package in node['packages'][package_type]:
@@ -147,12 +147,7 @@ def packages():
 @ui.route('/packages/<string:type>')
 @ui.route('/<environment>/packages/<string:type>')
 def packages_by_type(type):
-    nodes = flask.current_app.chef.partial_search('node', {
-        'packages_' + type: '*',
-        'chef_environment': flask.g.chef_environment
-    }, {
-        'packages': ['packages', type]
-    })
+    nodes = partial_search_nodes({'packages_' + type: '*'}, ['packages', type])
     packages = set((p for node in nodes for p in node['packages']))
     return flask.render_template(
         'packages/index.html', packages=packages, type=type)
@@ -161,11 +156,8 @@ def packages_by_type(type):
 @ui.route('/packages/<string:type>/<string:name>')
 @ui.route('/<environment>/packages/<string:type>/<string:name>')
 def package(type, name):
-    nodes = flask.current_app.chef.partial_search('node', {
-        'chef_environment': flask.g.chef_environment,
-        'packages_' + type: name
-    }, {
-        'package_version': ['packages', type, name, 'version']
-    })
+    nodes = partial_search_nodes(
+        {'packages_{}_{}'.format(type, name): '*'},
+        {'package_version': ['packages', type, name, 'version']})
     return flask.render_template(
         'packages/view.html', type=type, name=name, nodes=nodes)

@@ -50,22 +50,17 @@ class Chef(object):
     # POST /search
 
     @staticmethod
-    def _build_partial_search(keys):
+    def normalise_keys(keys):
         """Create a partial_search from a list of attributes or a dict"""
         if isinstance(keys, (list, tuple)):
             keys = [key.split('.') for key in keys]
             keys = dict((key[0], key) for key in keys)
         return keys
 
-    def partial_search(self, index, query, keys={}, rows=1000, start=0):
+    def partial_search(self, index, query, keys=None, rows=1000, start=0):
         """Returns data from a partial search (only returns defined keys)"""
         query = self._build_query(query)
-        keys = self._build_partial_search(keys)
-
-        # Sets a small number of very useful default attributes
-        if index == 'node':
-            keys.setdefault('name', ['name'])
-            keys.setdefault('chef_environment', ['chef_environment'])
+        keys = self.normalise_keys(keys)
 
         # Returns data in this structure:
         # {rows: [{data: {...}, url: '...'}], start: 0, total: 1}
