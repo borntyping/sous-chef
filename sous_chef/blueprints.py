@@ -56,17 +56,14 @@ def partial_search_nodes(search, keys={}):
     return partial_search('node', search, keys)
 
 
-def partial_search_node(name, keys={}):
-    """Returns a single node or raises an error"""
-    nodes = partial_search_nodes({'name': name}, keys)
-
-    if not nodes:
-        raise chef.exceptions.ChefServerNotFoundError('No node found')
-    elif len(nodes) > 1:
+def single_row(results):
+    """Returns a single row from a set of results or raises an error"""
+    if not results:
+        raise chef.exceptions.ChefServerNotFoundError('No matching rows found')
+    elif len(results) > 1:
         raise chef.exceptions.ChefServerNotFoundError(
-            'Multiple nodes returned, expected one')
-
-    return nodes[0]
+            'Multiple rows returned, expected one')
+    return results[0]
 
 
 # Environments
@@ -116,15 +113,16 @@ def nodes():
 
 @ui.route('/nodes/<string:node>')
 def redirect_node(node):
-    node = partial_search_node(node)
+    node = single_row(partial_search_nodes({'name': node}))
     return flask.redirect(flask.url_for(
         '.node', node=node['name'], environment=node['chef_environment']))
 
 
 @ui.route('/<environment>/nodes/<string:node>')
 def node(node):
-    return flask.render_template('node.html', node=partial_search_node(
-        node, ['run_list', 'role', 'recipes', 'packages']))
+    node = single_row(partial_search_nodes(
+        {'name': node}, ['run_list', 'role', 'recipes', 'packages']))
+    return flask.render_template('node.html', node=node)
 
 
 # Packages
