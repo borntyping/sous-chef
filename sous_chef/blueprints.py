@@ -7,6 +7,8 @@ import collections
 import flask
 import chef.exceptions
 
+import sous_chef
+
 __all__ = ['ui']
 
 ui = flask.Blueprint('ui', __name__)
@@ -36,6 +38,11 @@ def put_chef_environment(endpoint, values):
     expects = flask.current_app.url_map.is_endpoint_expecting
     if expects(endpoint, 'environment') and flask.g.chef_environment != '*':
         values.setdefault('environment', flask.g.chef_environment)
+
+
+@ui.context_processor
+def metadata():
+    return {'sous_chef_version': sous_chef.__version__}
 
 
 # Chef client wrappers
