@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name='sous-chef',
-    version='2.2.0',
+    version='2.3.0',
     url='https://github.com/datasift/sous-chef',
 
     author="Sam Clements",
@@ -10,14 +10,15 @@ setuptools.setup(
 
     description="A web frontend for the Chef server index",
     long_description=open('README.rst').read(),
+    license='MIT',
 
     packages=setuptools.find_packages(),
     include_package_data=True,
     zip_safe=False,
 
     install_requires=[
-        'flask==0.10.1',
-        'pychef==0.2.3'
+        'flask>=0.9.0',
+        'pychef>=0.2.3'
     ],
 
     extras_require={
@@ -26,13 +27,6 @@ setuptools.setup(
         ],
         'deploy': [
             'gunicorn>=18.0'
-        ]
-    },
-
-    entry_points={
-        'console_scripts': [
-            'sous-chef = sous_chef:main',
-            'sous-chef-debug = sous_chef:debug'
         ]
     },
 
