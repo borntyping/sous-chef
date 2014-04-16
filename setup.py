@@ -17,7 +17,7 @@ setuptools.setup(
     zip_safe=False,
 
     install_requires=[
-        'flask>=0.9.0',
+        'flask>=0.10.0',
         'pychef>=0.2.3'
     ],
 
