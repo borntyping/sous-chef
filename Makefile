@@ -26,6 +26,18 @@ flask: dist/python-flask-${flask_version}-${flask_release}.noarch.rpm
 dist/python-flask-${flask_version}-${flask_release}.noarch.rpm:
 	${fpm} --version ${flask_version} --iteration ${flask_release} flask
 
+flask.el6: dist/python-flask-${flask_version}-${flask_release}el6.noarch.rpm
+
+dist/python-flask-${flask_version}-${flask_release}el6.noarch.rpm:
+	${fpm} \
+	--epoch 2 --version ${flask_version} --iteration ${flask_release}el6 \
+	--no-python-dependencies \
+	--depends 'python(abi) = 2.6' \
+	--depends 'python-itsdangerous >= 0.21' \
+	--depends 'python-jinja2-26 >= 2.4' \
+	--depends 'python-werkzeug >= 0.7' \
+	flask
+
 
 pychef_version=0.2.3
 pychef_release=1
