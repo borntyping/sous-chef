@@ -115,7 +115,8 @@ def role(role):
 @ui.route('/nodes')
 @ui.route('/<environment>/nodes')
 def nodes():
-    return flask.render_template('nodes/index.html', nodes=partial_search_nodes({}))
+    return flask.render_template(
+        'nodes/index.html', nodes=partial_search_nodes({}))
 
 
 @ui.route('/nodes/<string:node>')
@@ -162,7 +163,7 @@ def packages_by_type(type):
 @ui.route('/<environment>/packages/<string:type>/<string:name>')
 def package(type, name):
     nodes = partial_search_nodes(
-        {'packages_{}_{}'.format(type, name): '*'},
+        {'packages_{0}_{1}'.format(type, name): '*'},
         {'package_version': ['packages', type, name, 'version']})
     return flask.render_template(
         'packages/view.html', type=type, name=name, nodes=nodes)
