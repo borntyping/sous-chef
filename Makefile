@@ -51,14 +51,21 @@ dist/python-flask-${flask_version}-${flask_release}el6.noarch.rpm:
 
 
 pychef_version=0.2.3
-pychef_release=1
+pychef_release=2
 
 pychef: dist/python-pychef-${pychef_version}-${pychef_release}.noarch.rpm
 
 dist/python-pychef-${pychef_version}-${pychef_release}.noarch.rpm:
 	${fpm} --version ${pychef_version} --iteration ${pychef_release} pychef
 
-all: sous-chef flask pychef
-el6: sous-chef.el6 flask.el6 pychef
+pychef.el6: dist/python-pychef-${pychef_version}-${pychef_release}el6.noarch.rpm
 
-.PHONY: sous-chef sous-chef.el6 flask flask.el6 pychef all el6
+dist/python-pychef-${pychef_version}-${pychef_release}el6.noarch.rpm:
+	${fpm} --version ${pychef_version} --iteration ${pychef_release}el6 \
+	--depends 'python(abi) = 2.6' pychef
+
+
+all: sous-chef flask pychef
+el6: sous-chef.el6 flask.el6 pychef.el6
+
+.PHONY: sous-chef sous-chef.el6 flask flask.el6 pychef pychef.el6 all el6
