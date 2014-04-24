@@ -9,18 +9,26 @@ define fpm
 endef
 
 
+default:
+	@echo "Usage:"
+	@echo "  make all - build generic rpms for sous-chef and dependencies"
+	@echo "  make el6 - build CentOS 6 rpms for sous-chef and dependencies"
+	@echo "  make {sous-chef,flask,pychef} - build generic rpm"
+	@echo "  make {sous-chef,flask,pychef}.el6 - build CentOS 6 rpm"
+
+
 version=$(shell python setup.py --version)
-release=1
+release=3
 
 sous-chef: dist/sous-chef-${version}-${release}.noarch.rpm
 
 dist/sous-chef-${version}-${release}.noarch.rpm:
 	${fpm} --version ${version} --iteration ${release} --no-python-fix-name setup.py
 
-sous-chef.el6: dist/sous-chef-${version}-${release}el6.noarch.rpm
+sous-chef.el6: dist/sous-chef-${version}-${release}.el6.noarch.rpm
 
-dist/sous-chef-${version}-${release}el6.noarch.rpm:
-	${fpm} --version ${version} --iteration ${release}el6 \
+dist/sous-chef-${version}-${release}.el6.noarch.rpm:
+	${fpm} --version ${version} --iteration ${release}.el6 \
 	--no-python-fix-name \
 	--no-python-dependencies \
 	--depends 'python(abi) = 2.6' \
@@ -30,18 +38,18 @@ dist/sous-chef-${version}-${release}el6.noarch.rpm:
 
 
 flask_version=0.10.1
-flask_release=1
+flask_release=3
 
 flask: dist/python-flask-${flask_version}-${flask_release}.noarch.rpm
 
 dist/python-flask-${flask_version}-${flask_release}.noarch.rpm:
 	${fpm} --version ${flask_version} --iteration ${flask_release} flask
 
-flask.el6: dist/python-flask-${flask_version}-${flask_release}el6.noarch.rpm
+flask.el6: dist/python-flask-${flask_version}-${flask_release}.el6.noarch.rpm
 
-dist/python-flask-${flask_version}-${flask_release}el6.noarch.rpm:
+dist/python-flask-${flask_version}-${flask_release}.el6.noarch.rpm:
 	${fpm} \
-	--epoch 2 --version ${flask_version} --iteration ${flask_release}el6 \
+	--epoch 2 --version ${flask_version} --iteration ${flask_release}.el6 \
 	--no-python-dependencies \
 	--depends 'python(abi) = 2.6' \
 	--depends 'python-itsdangerous >= 0.21' \
@@ -51,21 +59,21 @@ dist/python-flask-${flask_version}-${flask_release}el6.noarch.rpm:
 
 
 pychef_version=0.2.3
-pychef_release=2
+pychef_release=3
 
 pychef: dist/python-pychef-${pychef_version}-${pychef_release}.noarch.rpm
 
 dist/python-pychef-${pychef_version}-${pychef_release}.noarch.rpm:
 	${fpm} --version ${pychef_version} --iteration ${pychef_release} pychef
 
-pychef.el6: dist/python-pychef-${pychef_version}-${pychef_release}el6.noarch.rpm
+pychef.el6: dist/python-pychef-${pychef_version}-${pychef_release}.el6.noarch.rpm
 
-dist/python-pychef-${pychef_version}-${pychef_release}el6.noarch.rpm:
-	${fpm} --version ${pychef_version} --iteration ${pychef_release}el6 \
+dist/python-pychef-${pychef_version}-${pychef_release}.el6.noarch.rpm:
+	${fpm} --version ${pychef_version} --iteration ${pychef_release}.el6 \
 	--depends 'python(abi) = 2.6' pychef
 
 
 all: sous-chef flask pychef
 el6: sous-chef.el6 flask.el6 pychef.el6
 
-.PHONY: sous-chef sous-chef.el6 flask flask.el6 pychef pychef.el6 all el6
+.PHONY: sous-chef sous-chef.el6 flask flask.el6 pychef pychef.el6 all el6 default
