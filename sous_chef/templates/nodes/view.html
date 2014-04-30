@@ -11,24 +11,30 @@
 {% block body %}
 <div class="row">
   <div class="col-md-6">
-    <h3>Run list</h3>
+    <h3>Description</h3>
+
     <ul>
-    {% for item in node['run_list'] %}
-      <li>
-        <code>{{ item }}</code>
-      </li>
-    {% endfor %}
+      <li>Environment: <code>{{ node['chef_environment'] }}</code></li>
+      <li>Platform: <code>{{ node['platform'] }} {{ node['platform_version'] }}</code></li>
+      {% if node['tags'] %}
+      <li>Tags: <code>{{ node['tags'] | join(', ') }}</code></li>
+      {% endif %}
     </ul>
   </div>
 
   <div class="col-md-6">
-    <h3>Roles</h3>
+    <h3>Run list</h3>
     <ul>
-    {% for role in node['role'] | sort %}
+    {% for item in node['run_list'] %}
       <li>
-        <a href="{{ url_for('.role', role=role) }}">
-          <code>{{ role }}</code>
-        </a>
+      <code>
+      {% if item.startswith('role[') %}
+      {% set role = item[5:-1] %}
+        role[<a href="{{ url_for('.role', role=role) }}">{{ role }}</a>]
+      {% else %}
+        {{ item }}
+      {% endif %}
+      </code>
       </li>
     {% endfor %}
     </ul>
@@ -39,7 +45,7 @@
 <div class="row">
   <div class="col-md-12">
   {% for package_type, packages in node['packages'] | dictsort | reverse %}
-    <h3>Packages (<code>{{ package_type }}</code>)</h3>
+    <h3>Packages (<code><a href="{{ url_for('.packages_for_type', type=package_type)}}">{{ package_type }}</a></code>)</h3>
     <table class="table table-condensed table-hover">
       <thead>
         <tr>

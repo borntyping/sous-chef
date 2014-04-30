@@ -128,8 +128,14 @@ def redirect_node(node):
 
 @ui.route('/<environment>/nodes/<string:node>')
 def node(node):
-    node = single_row(partial_search_nodes(
-        {'name': node}, ['run_list', 'role', 'recipes', 'packages']))
+    node = single_row(partial_search_nodes({'name': node}, [
+        'run_list',
+        'platform',
+        'platform_version',
+        'tags',
+        'recipes',
+        'packages'
+    ]))
     return flask.render_template('nodes/view.html', node=node)
 
 

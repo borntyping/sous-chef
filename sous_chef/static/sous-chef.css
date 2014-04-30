@@ -1,40 +1,42 @@
-/* Give extra space to the fixed navbar */
-body { padding-top: 70px; }
+/* Page */
 
-/* Mute environment links in headers */
-header a.environment { color: #999; }
-header a.environment:hover { color: #666; }
+	/* Give extra space to the fixed navbar */
+	body { padding-top: 70px; }
 
-/* Color code blocks in links differently */
-a code { color: #428BCA; background-color: #F4F8FA; }
-a:hover code { color: #2A6496; }
+/* Headers */
 
-/* Highlight 'All environments' in the environment dropdown */
-#environment_all {
-	font-weight: bold;
-}
+	/* Mute environment links in headers */
+	header a.environment { color: #999; }
+	header a.environment:hover { color: #666; }
 
-/* Add margins around the footer so it's not close to the text */
-footer {
-	padding-top: 1em;
-	text-align: center;
-}
+/* Content */
 
-/* Use muted colors for the footer */
-footer a { color: #666; }
-footer a:hover { color: #333; }
+	/* Color code blocks in links differently */
+	a code { color: #428BCA; /*background-color: #F4F8FA;*/ }
+	a:hover code { color: #2A6496; }
 
-/* Small devices (tablets, 768px and up) */
-@media (min-width: 768px) {
+	/* Remove the code background highlighting */
+	code {
+		background-color: transparent;
+		border-radius: 0;
+		padding: 0;
+	}
 
-}
+/* Footer */
 
-/* Medium devices (desktops, 992px and up) */
-@media (min-width: 992px) {
+	/* Add margins around the footer so it's not close to the text */
+	footer {
+		padding-top: 1em;
+		text-align: center;
+	}
 
-}
+	/* Use muted colors for the footer */
+	footer a { color: #666; }
+	footer a:hover { color: #333; }
 
-/* Large devices (large desktops, 1200px and up) */
-@media (min-width: 1200px) {
+/* Navigation */
 
-}
+	/* Highlight 'All environments' in the environment dropdown */
+	#environment_all {
+		font-weight: bold;
+	}
