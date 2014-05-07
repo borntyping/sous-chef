@@ -143,21 +143,16 @@ def node(node):
 
 # Packages
 
-def package_version(node, sep='-'):
-    """Returns an identity for a node's packages
-
-    This is constructed from the version and release attributes, if they are
-    present.
-    """
-    identity = list()
-    identity.append(node['package_details'].get('version', None))
-    identity.append(node['package_details'].get('release', None))
-    return sep.join(filter(lambda x: x is not None, identity))
-
-
 def group_nodes_by_package_version(nodes):
-    packages = itertools.groupby(nodes, package_version)
-    return sorted(map(jinja2.filters._GroupTuple, packages))
+    def version(node, sep='-', unknown='Unknown'):
+        identity = list()
+        identity.append(node['package_details'].get('version', None))
+        identity.append(node['package_details'].get('release', None))
+        return sep.join(filter(lambda x: x is not None, identity)) or unknown
+    # Group the packages by the version
+    packages = itertools.groupby(sorted(nodes, key=version), version)
+    # Use jinja2's GroupTuple to match the groupby filter
+    return map(jinja2.filters._GroupTuple, packages)
 
 
 @ui.route('/packages')
@@ -191,10 +186,6 @@ def package(type, name):
     nodes = partial_search_nodes(
         {'packages_{0}_{1}'.format(type, name): '*'},
         {'package_details': ['packages', type, name]})
-
-    packages_by_version = group_nodes_by_package_version(nodes)
-
     return flask.render_template(
-        'packages/view.html',
-        type=type, name=name, nodes=nodes,
-        packages_by_version=packages_by_version)
+        'packages/view.html', type=type, name=name, nodes=nodes,
+        packages_by_version=group_nodes_by_package_version(nodes))
