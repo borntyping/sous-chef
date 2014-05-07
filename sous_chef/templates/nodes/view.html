@@ -51,6 +51,7 @@
         <tr>
           <th>Package</th>
           <th>Version</th>
+          <th>Release</th>
         </tr>
       </thead>
       <tbody>
@@ -62,9 +63,10 @@
             </a>
           </td>
           <td>
-            <a href="{{ url_for('.package', type=package_type, name=package, _anchor=metadata['version']) }}">
-              <code>{{ metadata['version'] }}</code>
-            </a>
+            <code>{{ metadata['version'] }}</code>
+          </td>
+          <td>
+            <code>{{ metadata['release'] }}</code>
           </td>
         </tr>
       {% endfor %}

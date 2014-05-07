@@ -3,9 +3,11 @@
 from __future__ import absolute_import
 
 import collections
+import itertools
 
-import flask
 import chef.exceptions
+import flask
+import jinja2.filters
 
 import sous_chef
 
@@ -141,6 +143,23 @@ def node(node):
 
 # Packages
 
+def package_version(node, sep='-'):
+    """Returns an identity for a node's packages
+
+    This is constructed from the version and release attributes, if they are
+    present.
+    """
+    identity = list()
+    identity.append(node['package_details'].get('version', None))
+    identity.append(node['package_details'].get('release', None))
+    return sep.join(filter(lambda x: x is not None, identity))
+
+
+def group_nodes_by_package_version(nodes):
+    packages = itertools.groupby(nodes, package_version)
+    return sorted(map(jinja2.filters._GroupTuple, packages))
+
+
 @ui.route('/packages')
 @ui.route('/<environment>/packages')
 def packages():
@@ -170,6 +189,11 @@ def packages_by_type(type):
 def package(type, name):
     nodes = partial_search_nodes(
         {'packages_{0}_{1}'.format(type, name): '*'},
-        {'package_version': ['packages', type, name, 'version']})
+        {'package_details': ['packages', type, name]})
+
+    packages_by_version = group_nodes_by_package_version(nodes)
+
     return flask.render_template(
-        'packages/view.html', type=type, name=name, nodes=nodes)
+        'packages/view.html',
+        type=type, name=name, nodes=nodes,
+        packages_by_version=packages_by_version)
