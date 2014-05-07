@@ -15,7 +15,7 @@
   <div class="col-md-12">
   {% for package_type, packages in packages | dictsort | reverse %}
     <h3>
-      <a href="{{ url_for('.packages_by_type', type=package_type) }}">
+      <a href="{{ url_for('.packages_for_type', type=package_type) }}">
         <code>{{ package_type }}</code> packages
       </a>
     </h3>

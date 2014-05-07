@@ -162,7 +162,7 @@ def group_nodes_by_package_version(nodes):
 
 @ui.route('/packages')
 @ui.route('/<environment>/packages')
-def packages():
+def packages_by_type():
     nodes = partial_search_nodes({'packages': '*'}, ['packages'])
 
     packages = collections.defaultdict(set)
@@ -177,11 +177,12 @@ def packages():
 
 @ui.route('/packages/<string:type>')
 @ui.route('/<environment>/packages/<string:type>')
-def packages_by_type(type):
-    nodes = partial_search_nodes({'packages_' + type: '*'}, ['packages', type])
+def packages_for_type(type):
+    nodes = partial_search_nodes(
+        {'packages_' + type: '*'}, {'packages': ['packages', type]})
     packages = set((p for node in nodes for p in node['packages']))
     return flask.render_template(
-        'packages/index.html', packages=packages, type=type)
+        'packages/index_for_type.html', packages=packages, type=type)
 
 
 @ui.route('/packages/<string:type>/<string:name>')

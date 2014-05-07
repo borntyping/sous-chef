@@ -2,7 +2,7 @@
 {% from 'nodes/macros.html' import list_nodes, list_nodes_by_environment %}
 {% block title %}{{ name }} - {{ type }} package{% endblock %}
 {% block header -%}
-  {{ name }} <small><a href="{{ url_for('.packages_by_type', type=type) }}">{{ type }} package</a></small>
+  {{ name }} <small><a href="{{ url_for('.packages_for_type', type=type) }}">{{ type }} package</a></small>
 {%- endblock %}
 {% block body %}
 <div class="row">
