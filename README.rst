@@ -1,9 +1,23 @@
 Sous-chef
 =========
 
-.. image:: https://pypip.in/v/sous-chef/badge.png
+.. image:: http://img.shields.io/pypi/v/sous-chef.svg?style=flat-square
     :target: https://pypi.python.org/pypi/sous-chef
-    :alt: Latest PyPI version
+    :alt: Sous-chef on PyPI
+
+.. image:: http://img.shields.io/pypi/l/sous-chef.svg?style=flat-square
+    :target: https://pypi.python.org/pypi/sous-chef
+    :alt: Sous-chef on PyPI
+
+.. image:: http://img.shields.io/travis/borntyping/sous-chef/master.svg?style=flat-square
+    :target: https://travis-ci.org/borntyping/sous-chef
+    :alt: Travis-CI build status for Sous-chef
+
+.. image:: https://img.shields.io/github/issues/borntyping/sous-chef.svg?style=flat
+    :target: https://github.com/borntyping/sous-chef/issues
+    :alt: GitHub issues for Sous-chef
+
+|
 
 A web frontend for the Chef server index, displaying nodes, roles and
 environments, as well as data collected by Ohai plugins (in particular,
