@@ -18,7 +18,8 @@ setuptools.setup(
 
     install_requires=[
         'flask>=0.10.0',
-        'pychef>=0.2.3'
+        'pychef>=0.2.3',
+        'httpheader>=1.1'
     ],
 
     extras_require={
