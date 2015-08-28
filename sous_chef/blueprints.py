@@ -17,16 +17,18 @@ __all__ = ['ui']
 
 ui = flask.Blueprint('ui', __name__)
 
-def render(template_name, **kwargs):
-    accept_header = flask.request.headers.get("Accept")
-    acceptable_types = httpheader.acceptable_content_type(accept_header, ("application/json"));
 
-    if acceptable_types and acceptable_types[1] == httpheader.content_type("application/json"):
+def render(template_name, **kwargs):
+    types = httpheader.acceptable_content_type(
+        flask.request.headers.get("Accept"), ("application/json",))
+
+    if types and types[1] == httpheader.content_type("application/json"):
         response = flask.make_response(json.dumps(kwargs))
         response.headers['Content-Type'] = 'application/json'
         return response
 
     return flask.render_template(template_name, **kwargs)
+
 
 @ui.errorhandler(404)
 @ui.errorhandler(chef.exceptions.ChefServerNotFoundError)

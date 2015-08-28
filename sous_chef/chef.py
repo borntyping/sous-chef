@@ -14,7 +14,7 @@ class Chef(object):
         config_keys = ('CHEF_URL', 'CHEF_KEY', 'CHEF_CLIENT')
 
         for key in config_keys:
-            if not key in app.config:
+            if key not in app.config:
                 raise Exception(key + " has not been set")
 
         return cls(*(app.config[x] for x in config_keys))
