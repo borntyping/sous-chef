@@ -4,10 +4,12 @@ from __future__ import absolute_import
 
 import collections
 import itertools
+import json
 
 import chef.exceptions
 import flask
 import jinja2.filters
+import httpheader
 
 import sous_chef
 
@@ -15,11 +17,21 @@ __all__ = ['ui']
 
 ui = flask.Blueprint('ui', __name__)
 
+def render(template_name, **kwargs):
+    accept_header = flask.request.headers.get("Accept")
+    acceptable_types = httpheader.acceptable_content_type(accept_header, ("application/json"));
+
+    if acceptable_types and acceptable_types[1] == httpheader.content_type("application/json"):
+        response = flask.make_response(json.dumps(kwargs))
+        response.headers['Content-Type'] = 'application/json'
+        return response
+
+    return flask.render_template(template_name, **kwargs)
 
 @ui.errorhandler(404)
 @ui.errorhandler(chef.exceptions.ChefServerNotFoundError)
 def not_found(error):
-    return flask.render_template('404.html', error=error), 404
+    return render('404.html', error=error), 404
 
 
 @ui.before_request
@@ -80,7 +92,7 @@ def single_row(results):
 @ui.route('/', endpoint='home')
 @ui.route('/environments')
 def environments():
-    return flask.render_template(
+    return render(
         'environments/index.html', environments=flask.g.chef_environments)
 
 
@@ -90,7 +102,7 @@ def environment():
     environment = flask.current_app.chef.get(
         'environments', flask.g.chef_environment)
     nodes = partial_search_nodes({'name': '*'})
-    return flask.render_template(
+    return render(
         'environments/view.html', environment=environment, nodes=nodes)
 
 
@@ -101,7 +113,7 @@ def environment():
 def roles():
     nodes = partial_search_nodes({'roles': '*'}, ['roles'])
     roles = set((r for node in nodes for r in node['roles']))
-    return flask.render_template('roles/index.html', roles=roles)
+    return render('roles/index.html', roles=roles)
 
 
 @ui.route('/roles/<string:role>')
@@ -109,7 +121,7 @@ def roles():
 def role(role):
     nodes = partial_search_nodes({'roles': role})
     role = flask.current_app.chef.get('roles', role)
-    return flask.render_template('roles/view.html', role=role, nodes=nodes)
+    return render('roles/view.html', role=role, nodes=nodes)
 
 
 # Nodes
@@ -117,7 +129,7 @@ def role(role):
 @ui.route('/nodes')
 @ui.route('/<environment>/nodes')
 def nodes():
-    return flask.render_template(
+    return render(
         'nodes/index.html', nodes=partial_search_nodes({}))
 
 
@@ -138,7 +150,7 @@ def node(node):
         'recipes',
         'packages'
     ]))
-    return flask.render_template('nodes/view.html', node=node)
+    return render('nodes/view.html', node=node)
 
 
 # Packages
@@ -166,7 +178,7 @@ def packages_by_type():
             for package in node['packages'][package_type]:
                 packages[package_type].add(package)
 
-    return flask.render_template(
+    return render(
         'packages/index_by_type.html', packages=packages)
 
 
@@ -176,7 +188,7 @@ def packages_for_type(type):
     nodes = partial_search_nodes(
         {'packages_' + type: '*'}, {'packages': ['packages', type]})
     packages = set((p for node in nodes for p in node['packages']))
-    return flask.render_template(
+    return render(
         'packages/index_for_type.html', packages=packages, type=type)
 
 
@@ -186,6 +198,6 @@ def package(type, name):
     nodes = partial_search_nodes(
         {'packages_{0}_{1}'.format(type, name): '*'},
         {'package_details': ['packages', type, name]})
-    return flask.render_template(
+    return render(
         'packages/view.html', type=type, name=name, nodes=nodes,
         packages_by_version=group_nodes_by_package_version(nodes))
