@@ -4,9 +4,15 @@
 <ul>
 {% for environment in environments | sort %}
   <li>
-    <a href="{{ url_for('.environment', environment=environment) }}">
+    <a href="{{ url_for('.environment', environment=environment) }}" title="Summary of the '{{ environment }}' environment.">
       <code>{{ environment }}</code>
     </a>
+
+    <span class="environment-links">
+      (<a href="{{ url_for('.roles', environment=environment) }}" title="Roles in the '{{ environment }}' environment.">roles</a>,
+      <a href="{{ url_for('.nodes', environment=environment) }}" title="Nodes in the '{{ environment }}' environment.">nodes</a>,
+      <a href="{{ url_for('.packages_by_type', environment=environment) }}" title="Packages in the '{{ environment }}' environment.">packages</a>)
+    </span>
   </li>
 {% endfor %}
 </ul>
