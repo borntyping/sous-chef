@@ -9,7 +9,6 @@ import json
 import chef.exceptions
 import flask
 import jinja2.filters
-import httpheader
 
 import sous_chef
 
@@ -18,11 +17,16 @@ __all__ = ['ui']
 ui = flask.Blueprint('ui', __name__)
 
 
-def render(template_name, **kwargs):
-    types = httpheader.acceptable_content_type(
-        flask.request.headers.get("Accept"), ("application/json",))
+def accept_json():
+    accept = flask.request.accept_mimetypes.best_match([
+        'application/json', 'text/html'])
+    return accept == 'application/json' and \
+        flask.request.accept_mimetypes[accept] > \
+        flask.request.accept_mimetypes['text/html']
 
-    if types and types[1] == httpheader.content_type("application/json"):
+
+def render(template_name, **kwargs):
+    if accept_json():
         response = flask.make_response(json.dumps(kwargs))
         response.headers['Content-Type'] = 'application/json'
         return response
@@ -114,7 +118,7 @@ def environment():
 @ui.route('/<environment>/roles')
 def roles():
     nodes = partial_search_nodes({'roles': '*'}, ['roles'])
-    roles = set((r for node in nodes for r in node['roles']))
+    roles = sorted(set((r for node in nodes for r in node['roles'])))
     return render('roles/index.html', roles=roles)
 
 
@@ -189,7 +193,7 @@ def packages_by_type():
 def packages_for_type(type):
     nodes = partial_search_nodes(
         {'packages_' + type: '*'}, {'packages': ['packages', type]})
-    packages = set((p for node in nodes for p in node['packages']))
+    packages = sorted(set((p for node in nodes for p in node['packages'])))
     return render(
         'packages/index_for_type.html', packages=packages, type=type)
 
