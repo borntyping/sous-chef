@@ -10,8 +10,10 @@ import sous_chef.chef
 __all__ = ['create_app']
 
 
-def create_app():
-    app = flask.Flask('sous_chef', instance_relative_config=True)
+def create_app(instance_path=None):
+    app = flask.Flask('sous_chef',
+                      instance_path=instance_path,
+                      instance_relative_config=True)
 
     # Load configuration from an optional instance config file
     app.config.from_pyfile('config.py')
@@ -25,8 +27,8 @@ def create_app():
     return app
 
 
-def create_debug_app():
-    app = create_app()
+def create_debug_app(instance_path=None):
+    app = create_app(instance_path=instance_path)
     app.config['DEBUG'] = True
 
     # Install the Flask debug toolbar extension, if the package is availible
