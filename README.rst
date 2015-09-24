@@ -1,19 +1,19 @@
 Sous-chef
 =========
 
-.. image:: http://img.shields.io/pypi/v/sous-chef.svg?style=flat-square
+.. image:: http://img.shields.io/pypi/v/sous-chef.svg
     :target: https://pypi.python.org/pypi/sous-chef
     :alt: Sous-chef on PyPI
 
-.. image:: http://img.shields.io/pypi/l/sous-chef.svg?style=flat-square
+.. image:: http://img.shields.io/pypi/l/sous-chef.svg
     :target: https://pypi.python.org/pypi/sous-chef
     :alt: Sous-chef on PyPI
 
-.. image:: http://img.shields.io/travis/borntyping/sous-chef/master.svg?style=flat-square
+.. image:: http://img.shields.io/travis/borntyping/sous-chef/master.svg
     :target: https://travis-ci.org/borntyping/sous-chef
     :alt: Travis-CI build status for Sous-chef
 
-.. image:: https://img.shields.io/github/issues/borntyping/sous-chef.svg?style=flat
+.. image:: https://img.shields.io/github/issues/borntyping/sous-chef.svg
     :target: https://github.com/borntyping/sous-chef/issues
     :alt: GitHub issues for Sous-chef
 
