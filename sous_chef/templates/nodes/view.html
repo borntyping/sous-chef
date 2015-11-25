@@ -17,7 +17,14 @@
       <li>Environment: <code>{{ node['chef_environment'] }}</code></li>
       <li>Platform: <code>{{ node['platform'] }} {{ node['platform_version'] }}</code></li>
       {% if node['tags'] %}
-      <li>Tags: <code>{{ node['tags'] | join(', ') }}</code></li>
+      <li>
+        Tags:
+        <ul>
+        {% for tag in node['tags'] | sort %}
+          <li></li><code>{{ tag }}</code>,
+        {% endfor %}
+        </ul>
+      </li>
       {% endif %}
     </ul>
   </div>
