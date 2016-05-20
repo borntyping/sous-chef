@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% from 'nodes/macros.html' import list_nodes, list_nodes_by_environment %}
+{% block title %}{{ name }} - {{ type }} package{% endblock %}
+{% block header -%}
+  Cookbooks in this organization <small><a href="{{ url_for('.cookbook') }}">{{ type }} cookbook</a></small>
+{%- endblock %}
+{% block body %}
+<div class="row">
+  <div class="col-md-12">
+      <h3>Latest versions</h3>
+  {% if cookbooks %}
+    <ul>
+    {% for name in cookbooks %}
+    <li><a href="{{url_for('.cookbook_show', name= name)}}">{{ name }} ({{ cookbooks[name].versions[0].version }})</a></li>
+    {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-danger">No cookbook versions to display.</p>
+  {% endif %}
+  </div>
+</div>
+{% endblock %}
