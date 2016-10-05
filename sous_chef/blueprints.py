@@ -207,3 +207,34 @@ def package(type, name):
     return render(
         'packages/view.html', type=type, name=name, nodes=nodes,
         packages_by_version=group_nodes_by_package_version(nodes))
+
+
+@ui.route('/cookbooks/')
+def cookbook():
+    cb = flask.current_app.chef.get('cookbooks/?num_versions=1')
+    cookbooks = collections.OrderedDict(sorted(
+       cb.items()
+    ))
+    return render(
+        'cookbooks/list.html', cookbooks=cookbooks)
+
+
+@ui.route('/cookbooks/<string:name>')
+@ui.route('/cookbooks/<string:name>/<environment>')
+def cookbook_show(name):
+    cookbook = flask.current_app.chef.get(
+            'cookbooks/' + name + '?num_versions=all')
+
+    lock = None
+    if flask.g.chef_environment != "*":
+        environment = flask.current_app.chef.get(
+            'environments', flask.g.chef_environment)
+
+        try:
+            lock = environment['cookbook_versions'][name].replace("= ", "")
+        except KeyError:
+            pass
+
+    return render(
+        'cookbooks/show.html',
+        name=name, cookbooks=cookbook[name]['versions'], lock=lock)
