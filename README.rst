@@ -47,7 +47,7 @@ used). Optionally uses `Flask Debug Toolbar`_ using the debug application.
 Compatibility
 ^^^^^^^^^^^^^
 
-Targets Python 2.6 and 2.7, due to the dependency on `PyChef`_.
+Targets Python 2.7, due to the dependency on `PyChef`_.
 
 
 
